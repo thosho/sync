@@ -7,26 +7,84 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        #player { width: 100%; aspect-ratio: 16 / 9; border-radius: 0.5rem; background-color: #000; }
-        .chat-message, .system-message { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; translateY(0); } }
-        .lds-ring { display: inline-block; position: relative; width: 20px; height: 20px; }
-        .lds-ring div { box-sizing: border-box; display: block; position: absolute; width: 16px; height: 16px; margin: 2px; border: 2px solid #fff; border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: #fff transparent transparent transparent; }
-        .lds-ring div:nth-child(1) { animation-delay: -0.45s; } .lds-ring div:nth-child(2) { animation-delay: -0.3s; } .lds-ring div:nth-child(3) { animation-delay: -0.15s; }
-        @keyframes lds-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #guest-sync-notice { transition: opacity 0.5s, transform 0.5s; }
-    </style>
+	<style>
+	    @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+    
+	    body { font-family: 'Inter', sans-serif; }
+	    #player { width: 100%; aspect-ratio: 16 / 9; border-radius: 0.5rem; background-color: #000; }
+	    .chat-message, .system-message { animation: fadeIn 0.3s ease-in-out; }
+	    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; translateY(0); } }
+	    .lds-ring { display: inline-block; position: relative; width: 20px; height: 20px; }
+	    .lds-ring div { box-sizing: border-box; display: block; position: absolute; width: 16px; height: 16px; margin: 2px; border: 2px solid #fff; border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: #fff transparent transparent transparent; }
+	    .lds-ring div:nth-child(1) { animation-delay: -0.45s; } .lds-ring div:nth-child(2) { animation-delay: -0.3s; } .lds-ring div:nth-child(3) { animation-delay: -0.15s; }
+	    @keyframes lds-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+	    #guest-sync-notice { transition: opacity 0.5s, transform 0.5s; }
+	    .mode-card { transition: all 0.3s ease; cursor: pointer; }
+	    .mode-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    
+	    .brand-title {
+	        font-family: 'Audiowide', cursive;
+	        letter-spacing: 0.05em;
+	        color: #2563eb;
+	    }
+    
+	    .brand-title-large {
+	        font-family: 'Audiowide', cursive;
+	        letter-spacing: 0.1em;
+	        font-size: 3.5rem;
+	        color: #ffffff;
+	        text-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.3);
+	    }
+    
+	    .dark .brand-title {
+	        color: #60a5fa;
+	    }
+    
+	    .dark .brand-title-large {
+	        color: #ffffff;
+	        text-shadow: 0 0 20px rgba(96, 165, 250, 0.6), 0 0 40px rgba(96, 165, 250, 0.4);
+	    }
+	</style>
+	
+	
+    
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white flex items-center justify-center min-h-screen p-4">
 
     <div id="app-container" class="w-full max-w-4xl mx-auto">
 
-        <div id="initial-view" class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-md mx-auto">
-            <h1 class="text-3xl font-extrabold mb-2 text-center text-blue-600 dark:text-blue-400">Sync</h1>
+        <div id="initial-view" class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-2xl mx-auto">
+		  <h1 class="brand-title-large font-extrabold mb-2 text-center">SYNC</h1>
+		  
             <p class="text-gray-600 dark:text-gray-400 mb-6 text-center">Watch together, stay in sync.</p>
-            <div class="space-y-4">
+            
+            <!-- Mode Selection -->
+            <div id="mode-selection" class="space-y-4 mb-6">
+             
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Normal Mode -->
+                    <div id="normal-mode-card" class="mode-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-lg">
+                        <div class="text-center">
+                            <svg class="w-12 h-12 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
+                            <h3 class="text-xl font-bold mb-2">Watch Party</h3>
+                            <p class="text-sm opacity-90">Host controls, multiple viewers</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 2 Way Sync Mode -->
+                    <div id="twoway-mode-card" class="mode-card bg-gradient-to-br from-pink-500 to-red-500 text-white p-6 rounded-lg">
+                        <div class="text-center">
+                            <svg class="w-12 h-12 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                            <h3 class="text-xl font-bold mb-2">2 Way Sync</h3>
+                            <p class="text-sm opacity-90">Both control, perfect for couples</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Normal Mode Form -->
+            <div id="normal-mode-form" class="hidden space-y-4">
+                <button id="back-to-mode-btn" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">← Back to modes</button>
                 <input type="text" id="username-input-initial" placeholder="Enter Your Name" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <hr class="border-gray-300 dark:border-gray-600">
                 <p class="font-bold text-lg text-center">Create a Room</p>
@@ -42,18 +100,36 @@
                 <input type="text" id="join-room-id-input" placeholder="Enter Host's Room ID" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
                 <button id="join-room-btn" class="w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-md">Join Room</button>
             </div>
+            
+            <!-- 2 Way Sync Form -->
+            <div id="twoway-mode-form" class="hidden space-y-4">
+                <button id="back-to-mode-btn-2" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">← Back to modes</button>
+                <input type="text" id="username-input-twoway" placeholder="Enter Your Name" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <hr class="border-gray-300 dark:border-gray-600">
+                <p class="font-bold text-lg text-center text-pink-600 dark:text-pink-400">💕 2 Way Sync</p>
+                <input type="text" id="session-title-twoway" placeholder="Session Title (e.g., Movie Night)" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+                <button id="create-twoway-btn" class="w-full bg-pink-600 hover:bg-pink-700 font-bold py-2 px-4 rounded-md text-white">Create 2-Way Room</button>
+                <hr class="border-gray-300 dark:border-gray-600">
+                <input type="text" id="join-twoway-id-input" placeholder="Enter Partner's Room ID" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+                <button id="join-twoway-btn" class="w-full bg-red-600 hover:bg-red-700 font-bold py-2 px-4 rounded-md text-white">Join Partner</button>
+            </div>
+            
             <p id="status-text" class="text-sm text-center text-red-500 dark:text-red-400 mt-4 h-5"></p>
             
             <p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-6">Designed by @Thosho Tech</p>
-            </div>
+        </div>
 
         <div id="main-view" class="hidden">
             <header class="mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 w-full md:w-auto">
-                    <h1 class="text-2xl font-extrabold text-blue-600 dark:text-blue-400 flex-shrink-0">Sync</h1>
+					<h1 class="brand-title text-2xl font-extrabold flex-shrink-0">SyncWave</h1>
+                    
                     
                     <div class="border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-gray-700 pt-2 sm:pt-0 sm:pl-6">
-                        <h2 id="session-title-display" class="text-xl font-bold"></h2>
+                        <div class="flex items-center gap-2">
+                            <h2 id="session-title-display" class="text-xl font-bold"></h2>
+                            <span id="twoway-badge" class="hidden text-xs bg-pink-500 text-white px-2 py-1 rounded-full">💕 2-Way</span>
+                        </div>
                         <div class="flex items-center text-sm">
                             <span class="text-gray-500 dark:text-gray-400 mr-2">Room ID:</span>
                             <span id="room-id-display" class="font-mono text-blue-600 dark:text-blue-400"></span>
@@ -67,7 +143,7 @@
             
             <div id="host-controls" class="hidden mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-3">
                 <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" id="video-url-input" placeholder="Host: Paste YouTube video URL or ID" class="flex-grow bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+                    <input type="text" id="video-url-input" placeholder="Paste YouTube video URL or ID" class="flex-grow bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
                     <button id="load-video-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">Load Video</button>
                 </div>
                  <div id="host-panel" class="hidden bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
@@ -88,7 +164,7 @@
                         <h2 class="text-xl font-semibold">Live Discussion</h2>
                         <div class="flex items-center gap-2">
                             <div id="sync-time-container" class="text-sm font-mono p-1 bg-gray-100 dark:bg-gray-700 rounded">
-                                <span id="sync-time-label">Sync Time:</span>
+                                <span id="sync-time-label">Time:</span>
                                 <span id="host-time-display" class="font-bold">--:--</span>
                             </div>
                             <button id="manual-sync-btn" class="hidden text-xs bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-md">Sync</button>
@@ -121,20 +197,25 @@
         // --- State ---
         let peer, isHost = false, hostId = null, myPeerId = null;
         let connections = new Map();
-        let sessionState = { title: "Watch Party", videoId: null, hostTimestamp: 0, isPlaying: false, isPrivate: false, accessCodes: [], users: [], chat: [] };
-        let localState = { username: "", connectionTimeout: null, ignoreNextStateChange: false, retryCount: 0, hostConnection: null };
+        let sessionState = { title: "Watch Party", videoId: null, hostTimestamp: 0, isPlaying: false, isPrivate: false, isTwoWay: false, accessCodes: [], users: [], chat: [] };
+        let localState = { username: "", connectionTimeout: null, ignoreNextStateChange: false, retryCount: 0, hostConnection: null, lastBroadcastTime: 0, broadcastCooldown: 1000 };
         const loadingSpinner = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
         
         let player, ytReady = false, playerReady = false;
-        let prevTime = 0, syncCheckInterval = null, guestTimeUpdateInterval = null;
+        let prevTime = 0, prevState = -1, syncCheckInterval = null, guestTimeUpdateInterval = null;
 
         // --- DOM Elements ---
         const $ = (id) => document.getElementById(id);
         const initialView = $('initial-view'), mainView = $('main-view'), statusText = $('status-text');
-        const usernameInputInitial = $('username-input-initial');
+        const modeSelection = $('mode-selection'), normalModeForm = $('normal-mode-form'), twowayModeForm = $('twoway-mode-form');
+        const normalModeCard = $('normal-mode-card'), twowayModeCard = $('twoway-mode-card');
+        const backToModeBtn = $('back-to-mode-btn'), backToModeBtn2 = $('back-to-mode-btn-2');
+        const usernameInputInitial = $('username-input-initial'), usernameInputTwoway = $('username-input-twoway');
         const createRoomBtn = $('create-room-btn'), joinRoomBtn = $('join-room-btn'), leaveRoomBtn = $('leave-room-btn');
-        const sessionTitleInput = $('session-title-input'), roomTypeToggle = $('room-type-toggle'), joinRoomIdInput = $('join-room-id-input');
-        const sessionTitleDisplay = $('session-title-display'), roomIdDisplay = $('room-id-display');
+        const createTwowayBtn = $('create-twoway-btn'), joinTwowayBtn = $('join-twoway-btn');
+        const sessionTitleInput = $('session-title-input'), sessionTitleTwoway = $('session-title-twoway');
+        const roomTypeToggle = $('room-type-toggle'), joinRoomIdInput = $('join-room-id-input'), joinTwowayIdInput = $('join-twoway-id-input');
+        const sessionTitleDisplay = $('session-title-display'), roomIdDisplay = $('room-id-display'), twowayBadge = $('twoway-badge');
         const hostControls = $('host-controls'), videoUrlInput = $('video-url-input'), loadVideoBtn = $('load-video-btn');
         const hostPanel = $('host-panel'), generateCodesBtn = $('generate-codes-btn'), accessCodesList = $('access-codes-list');
         const guestSyncNotice = $('guest-sync-notice');
@@ -144,6 +225,29 @@
         const manualSyncBtn = $('manual-sync-btn');
         const toast = $('toast');
         const copyRoomIdBtn = $('copy-room-id-btn');
+        
+        // --- Mode Selection ---
+        normalModeCard.addEventListener('click', () => {
+            modeSelection.classList.add('hidden');
+            normalModeForm.classList.remove('hidden');
+        });
+        
+        twowayModeCard.addEventListener('click', () => {
+            modeSelection.classList.add('hidden');
+            twowayModeForm.classList.remove('hidden');
+        });
+        
+        backToModeBtn.addEventListener('click', () => {
+            normalModeForm.classList.add('hidden');
+            modeSelection.classList.remove('hidden');
+            setStatus('');
+        });
+        
+        backToModeBtn2.addEventListener('click', () => {
+            twowayModeForm.classList.add('hidden');
+            modeSelection.classList.remove('hidden');
+            setStatus('');
+        });
         
         // --- YouTube IFrame API ---
         var tag = document.createElement('script');
@@ -163,14 +267,16 @@
             
             if (player) player.destroy();
             
+            const hasControls = sessionState.isTwoWay || isHost;
+            
             player = new YT.Player('player', {
                 height: '100%',
                 width: '100%',
                 videoId: videoId,
                 playerVars: {
                     'playsinline': 1,
-                    'controls': isHost ? 1 : 0,
-                    'disablekb': isHost ? 0 : 1,
+                    'controls': hasControls ? 1 : 0,
+                    'disablekb': hasControls ? 0 : 1,
                     'modestbranding': 1,
                     'rel': 0
                 },
@@ -184,7 +290,7 @@
         function onPlayerReady(event) {
             playerReady = true;
             
-            if (isHost) {
+            if (sessionState.isTwoWay || isHost) {
                 startSyncCheck();
             } else {
                 syncToHost();
@@ -193,30 +299,48 @@
         }
 
         function onPlayerStateChange(event) {
-            if (!isHost || localState.ignoreNextStateChange) {
+            // FIXED: Prevent broadcast loop
+            if (localState.ignoreNextStateChange) {
                 localState.ignoreNextStateChange = false;
                 return;
             }
             
             const state = event.data;
-            const currentTime = player.getCurrentTime();
             
-            if (state === YT.PlayerState.PLAYING) {
-                sessionState.isPlaying = true;
-                broadcast({ 
-                    type: 'player-control', 
-                    action: 'play',
-                    time: currentTime
-                });
-                addSystemMessage('Host started playing the video');
-            } else if (state === YT.PlayerState.PAUSED) {
-                sessionState.isPlaying = false;
-                broadcast({ 
-                    type: 'player-control', 
-                    action: 'pause',
-                    time: currentTime
-                });
-                addSystemMessage('Host paused the video');
+            // FIXED: Only broadcast if state actually changed AND cooldown period passed
+            if (state === prevState) return;
+            
+            const now = Date.now();
+            if (now - localState.lastBroadcastTime < localState.broadcastCooldown) {
+                return; // Skip if within cooldown period
+            }
+            
+            prevState = state;
+            localState.lastBroadcastTime = now;
+            
+            // In 2-way mode or host mode, broadcast changes
+            if (sessionState.isTwoWay || isHost) {
+                const currentTime = player.getCurrentTime();
+                
+                if (state === YT.PlayerState.PLAYING) {
+                    sessionState.isPlaying = true;
+                    broadcast({ 
+                        type: 'player-control', 
+                        action: 'play',
+                        time: currentTime,
+                        senderId: myPeerId  // FIXED: Track who sent it
+                    });
+                    addSystemMessage(`${localState.username} started playing`);
+                } else if (state === YT.PlayerState.PAUSED) {
+                    sessionState.isPlaying = false;
+                    broadcast({ 
+                        type: 'player-control', 
+                        action: 'pause',
+                        time: currentTime,
+                        senderId: myPeerId  // FIXED: Track who sent it
+                    });
+                    addSystemMessage(`${localState.username} paused`);
+                }
             }
         }
 
@@ -224,45 +348,48 @@
             if (syncCheckInterval) clearInterval(syncCheckInterval);
             
             syncCheckInterval = setInterval(() => {
-                if (!player || !isHost) return;
+                if (!player) return;
                 
                 const currentTime = player.getCurrentTime();
                 
-                if (Math.abs(currentTime - prevTime) > 1.5) {
-                    sessionState.hostTimestamp = currentTime;
-                    broadcast({ 
-                        type: 'player-control', 
-                        action: 'seek',
-                        time: currentTime
-                    });
-                    addSystemMessage(`Host seeked to ${formatTime(currentTime)}`);
+                // FIXED: Only broadcast seek if significant jump
+                if (Math.abs(currentTime - prevTime) > 2) {
+                    const now = Date.now();
+                    if (now - localState.lastBroadcastTime >= localState.broadcastCooldown) {
+                        sessionState.hostTimestamp = currentTime;
+                        broadcast({ 
+                            type: 'player-control', 
+                            action: 'seek',
+                            time: currentTime,
+                            senderId: myPeerId  // FIXED: Track who sent it
+                        });
+                        if (sessionState.isTwoWay || isHost) {
+                            addSystemMessage(`${localState.username} seeked to ${formatTime(currentTime)}`);
+                        }
+                        localState.lastBroadcastTime = now;
+                    }
                 }
                 
                 prevTime = currentTime;
                 sessionState.hostTimestamp = currentTime;
                 hostTimeDisplay.textContent = formatTime(currentTime);
-            }, 500);
+            }, 1000); // FIXED: Increased to 1 second
         }
         
-        // NEW: Continuously update guest's display of host time
         function startGuestTimeUpdate() {
             if (guestTimeUpdateInterval) clearInterval(guestTimeUpdateInterval);
             
             guestTimeUpdateInterval = setInterval(() => {
-                if (isHost || !localState.hostConnection || !localState.hostConnection.open) return;
+                if (isHost || sessionState.isTwoWay || !localState.hostConnection || !localState.hostConnection.open) return;
                 
-                // Request current time every 2 seconds
                 try {
                     localState.hostConnection.send({ type: 'request-current-time' });
-                } catch(e) {
-                    console.error('Failed to request time:', e);
-                }
+                } catch(e) {}
             }, 2000);
         }
         
-        // Sync button click - immediately sync
         function requestManualSync() {
-            if (isHost || !localState.hostConnection || !localState.hostConnection.open) {
+            if (sessionState.isTwoWay || isHost || !localState.hostConnection || !localState.hostConnection.open) {
                 showToast('Not connected to host');
                 return;
             }
@@ -276,7 +403,8 @@
         }
         
         function syncToHost(timestamp = null, isPlaying = null) {
-            if (!player || !playerReady || isHost) return;
+            if (!player || !playerReady) return;
+            if (sessionState.isTwoWay || isHost) return;
             
             const targetTime = timestamp !== null ? timestamp : sessionState.hostTimestamp;
             const shouldPlay = isPlaying !== null ? isPlaying : sessionState.isPlaying;
@@ -287,25 +415,26 @@
             
             if (shouldPlay) {
                 player.playVideo();
-                showSyncNotice(`🔄 Synced to ${formatTime(targetTime)} - Playing`);
+                showSyncNotice(`🔄 Synced to ${formatTime(targetTime)}`);
             } else {
                 player.pauseVideo();
-                showSyncNotice(`🔄 Synced to ${formatTime(targetTime)} - Paused`);
+                showSyncNotice(`🔄 Synced to ${formatTime(targetTime)}`);
             }
         }
         
         // --- P2P Logic ---
-        function initializePeerJS(asHost) {
-            localState.username = usernameInputInitial.value.trim();
-            if (!localState.username) { setStatus('Please enter your name.'); return; }
-            localStorage.setItem('syncwave_username', localState.username);
+        function initializePeerJS(asHost, isTwoWay = false) {
+            const username = isTwoWay ? usernameInputTwoway.value.trim() : usernameInputInitial.value.trim();
+            if (!username) { setStatus('Please enter your name.'); return; }
             
-            setLoading(true, asHost ? createRoomBtn : joinRoomBtn);
+            localState.username = username;
+            localStorage.setItem('syncwave_username', username);
+            
+            const btn = isTwoWay ? (asHost ? createTwowayBtn : joinTwowayBtn) : (asHost ? createRoomBtn : joinRoomBtn);
+            setLoading(true, btn);
             
             if (peer) {
-                try {
-                    peer.destroy();
-                } catch(e) {}
+                try { peer.destroy(); } catch(e) {}
                 peer = null;
             }
             
@@ -314,13 +443,13 @@
             clearTimeout(localState.connectionTimeout);
             localState.connectionTimeout = setTimeout(() => {
                 setStatus('Connection timed out. Retrying...');
-                setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
+                setLoading(false, btn);
                 
                 if (!asHost && localState.retryCount < 3) {
                     localState.retryCount++;
                     setTimeout(() => {
                         setStatus(`Retrying... (${localState.retryCount}/3)`);
-                        initializePeerJS(false);
+                        initializePeerJS(false, isTwoWay);
                     }, 2000);
                 } else {
                     setStatus('Could not connect. Please check Room ID and try again.');
@@ -345,26 +474,31 @@
                 if (!sessionState.users.some(u => u.id === myPeerId)) {
                     sessionState.users.push({ id: myPeerId, username: localState.username });
                 }
-                if (asHost) setupHost(); else setupGuest();
+                
+                if (asHost) {
+                    setupHost(isTwoWay);
+                } else {
+                    setupGuest(isTwoWay);
+                }
             });
             
             peer.on('error', err => {
                 clearTimeout(localState.connectionTimeout);
                 
                 if (err.type === 'peer-unavailable') {
-                    setStatus('Host is offline. Please check Room ID.');
-                    setLoading(false, joinRoomBtn);
+                    setStatus('Room not found. Please check Room ID.');
+                    setLoading(false, btn);
                     
                     if (!asHost && localState.retryCount < 3) {
                         localState.retryCount++;
                         setTimeout(() => {
                             setStatus(`Reconnecting... (${localState.retryCount}/3)`);
-                            initializePeerJS(false);
+                            initializePeerJS(false, isTwoWay);
                         }, 3000);
                     }
                 } else {
                     setStatus(`Error: ${err.type}. Please try again.`);
-                    setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
+                    setLoading(false, btn);
                 }
             });
 
@@ -375,21 +509,37 @@
             });
         }
 
-        function setupHost() {
-            isHost = true; hostId = myPeerId;
-            sessionState.title = sessionTitleInput.value.trim() || "My Watch Party";
-            sessionState.isPrivate = roomTypeToggle.checked;
-            peer.on('connection', conn => handleConnection(conn));
-            showView(false); updateUI();
+        function setupHost(isTwoWay = false) {
+            isHost = true; 
+            hostId = myPeerId;
+            sessionState.isTwoWay = isTwoWay;
+            sessionState.title = isTwoWay ? sessionTitleTwoway.value.trim() || "2-Way Sync" : sessionTitleInput.value.trim() || "My Watch Party";
+            sessionState.isPrivate = isTwoWay ? false : roomTypeToggle.checked;
+            
+            peer.on('connection', conn => {
+                if (sessionState.isTwoWay && connections.size >= 1) {
+                    conn.send({ type: 'room-full' });
+                    setTimeout(() => conn.close(), 500);
+                    return;
+                }
+                handleConnection(conn);
+            });
+            
+            showView(false); 
+            updateUI();
             setStatus('');
         }
 
-        function setupGuest() {
-            hostId = joinRoomIdInput.value.trim();
-            if (!hostId) { setStatus('Host ID is required.'); setLoading(false, joinRoomBtn); return; }
+        function setupGuest(isTwoWay = false) {
+            hostId = isTwoWay ? joinTwowayIdInput.value.trim() : joinRoomIdInput.value.trim();
+            if (!hostId) { 
+                setStatus('Room ID is required.'); 
+                setLoading(false, isTwoWay ? joinTwowayBtn : joinRoomBtn); 
+                return; 
+            }
             
             const conn = peer.connect(hostId, { 
-                metadata: { username: localState.username },
+                metadata: { username: localState.username, isTwoWay: isTwoWay },
                 reliable: true
             });
             
@@ -399,22 +549,22 @@
         function handleConnection(conn) {
             connections.set(conn.peer, conn);
             
-            // IMPORTANT: Store host connection for guests
             if (!isHost) {
                 localState.hostConnection = conn;
             }
             
             conn.on('open', () => {
                 if (isHost) {
-                    if (sessionState.isPrivate) conn.send({ type: 'auth-request' });
-                    else addAndSyncUser(conn, conn.metadata.username);
+                    if (sessionState.isPrivate) {
+                        conn.send({ type: 'auth-request' });
+                    } else {
+                        addAndSyncUser(conn, conn.metadata.username);
+                    }
                 }
             });
             
             conn.on('data', data => onDataReceived(conn, data));
-            
             conn.on('close', () => onUserDisconnect(conn));
-            
             conn.on('error', err => {
                 console.error('Connection error:', err);
                 onUserDisconnect(conn);
@@ -423,18 +573,42 @@
         
         function onDataReceived(conn, data) {
             switch(data.type) {
+                case 'room-full':
+                    alert('This 2-way room is full. Only 2 people can join.');
+                    leaveRoom();
+                    break;
+                    
                 case 'auth-code':
                     const code = sessionState.accessCodes.find(c => c.code === data.code && !c.usedBy);
-                    if(code) { code.usedBy = conn.peer; conn.send({ type: 'auth-success' }); addAndSyncUser(conn, conn.metadata.username); } 
-                    else { conn.send({ type: 'auth-fail' }); setTimeout(() => conn.close(), 500); }
+                    if(code) { 
+                        code.usedBy = conn.peer; 
+                        conn.send({ type: 'auth-success' }); 
+                        addAndSyncUser(conn, conn.metadata.username); 
+                    } else { 
+                        conn.send({ type: 'auth-fail' }); 
+                        setTimeout(() => conn.close(), 500); 
+                    }
                     break;
+                    
                 case 'auth-request':
                     const userCode = prompt("This room is private. Please enter the access code:");
-                    if(userCode) conn.send({type: 'auth-code', code: userCode.trim().toUpperCase()}); else conn.close();
+                    if(userCode) conn.send({type: 'auth-code', code: userCode.trim().toUpperCase()}); 
+                    else conn.close();
                     break;
-                case 'auth-success': conn.send({type: 'sync-request'}); break;
-                case 'auth-fail': alert('Invalid access code.'); leaveRoom(); break;
-                case 'sync-request': conn.send({ type: 'sync-state', state: sessionState }); break;
+                    
+                case 'auth-success': 
+                    conn.send({type: 'sync-request'}); 
+                    break;
+                    
+                case 'auth-fail': 
+                    alert('Invalid access code.'); 
+                    leaveRoom(); 
+                    break;
+                    
+                case 'sync-request': 
+                    conn.send({ type: 'sync-state', state: sessionState }); 
+                    break;
+                    
                 case 'sync-state': 
                     sessionState = data.state; 
                     showView(false); 
@@ -443,30 +617,35 @@
                         createPlayer(sessionState.videoId);
                     }
                     break;
+                    
                 case 'user-list-update': 
                     sessionState.users = data.users; 
                     updateUI(); 
                     break;
+                    
                 case 'video-change': 
                     sessionState.videoId = data.videoId;
                     createPlayer(data.videoId);
                     updateUI(); 
+                    addSystemMessage(`Video changed`);
                     break;
+                    
                 case 'player-control':
                     handlePlayerControl(data);
                     break;
+                    
                 case 'chat': 
                     sessionState.chat.push(data.message); 
                     updateUI(); 
                     break;
+                    
                 case 'system': 
                     sessionState.chat.push(data.message); 
                     updateUI(); 
                     break;
                 
-                // Handle time request from guest
                 case 'request-current-time':
-                    if (isHost && player && playerReady) {
+                    if ((sessionState.isTwoWay || isHost) && player && playerReady) {
                         const currentTime = player.getCurrentTime();
                         const currentState = player.getPlayerState();
                         const playing = currentState === YT.PlayerState.PLAYING;
@@ -479,9 +658,8 @@
                     }
                     break;
                 
-                // Handle sync request from guest (manual sync button)
                 case 'request-sync':
-                    if (isHost && player && playerReady) {
+                    if ((sessionState.isTwoWay || isHost) && player && playerReady) {
                         const currentTime = player.getCurrentTime();
                         const currentState = player.getPlayerState();
                         const playing = currentState === YT.PlayerState.PLAYING;
@@ -494,18 +672,16 @@
                     }
                     break;
                 
-                // Update displayed time (continuous updates)
                 case 'time-update':
-                    if (!isHost) {
+                    if (!sessionState.isTwoWay && !isHost) {
                         sessionState.hostTimestamp = data.time;
                         sessionState.isPlaying = data.isPlaying;
                         hostTimeDisplay.textContent = formatTime(data.time);
                     }
                     break;
                 
-                // Sync player (manual sync button response)
                 case 'sync-response':
-                    if (!isHost) {
+                    if (!sessionState.isTwoWay && !isHost) {
                         sessionState.hostTimestamp = data.time;
                         sessionState.isPlaying = data.isPlaying;
                         hostTimeDisplay.textContent = formatTime(data.time);
@@ -519,24 +695,26 @@
         function handlePlayerControl(data) {
             if (!player || !playerReady) return;
             
+            // FIXED: Don't apply changes from our own broadcasts
+            if (data.senderId === myPeerId) return;
+            
             localState.ignoreNextStateChange = true;
             
             switch(data.action) {
                 case 'play':
                     sessionState.isPlaying = true;
+                    prevState = YT.PlayerState.PLAYING;
                     player.seekTo(data.time, true);
                     player.playVideo();
-                    showSyncNotice('▶️ Playing');
                     break;
                 case 'pause':
                     sessionState.isPlaying = false;
+                    prevState = YT.PlayerState.PAUSED;
                     player.seekTo(data.time, true);
                     player.pauseVideo();
-                    showSyncNotice('⏸️ Paused');
                     break;
                 case 'seek':
                     player.seekTo(data.time, true);
-                    showSyncNotice(`⏩ Seeked to ${formatTime(data.time)}`);
                     break;
             }
             
@@ -547,7 +725,13 @@
         function addAndSyncUser(conn, username) {
             const newUser = { id: conn.peer, username };
             if(!sessionState.users.some(u => u.id === newUser.id)) sessionState.users.push(newUser);
-            addSystemMessage(`${username} has joined.`);
+            
+            if (sessionState.isTwoWay) {
+                addSystemMessage(`${username} joined 💕`);
+            } else {
+                addSystemMessage(`${username} has joined.`);
+            }
+            
             conn.send({ type: 'sync-state', state: sessionState });
             broadcast({ type: 'user-list-update', users: sessionState.users }, conn.peer);
             updateUI();
@@ -556,7 +740,11 @@
         function onUserDisconnect(conn) {
             const user = sessionState.users.find(u => u.id === conn.peer);
             if(user) { 
-                addSystemMessage(`${user.username} has left.`); 
+                if (sessionState.isTwoWay) {
+                    addSystemMessage(`${user.username} left 💔`);
+                } else {
+                    addSystemMessage(`${user.username} has left.`);
+                }
                 sessionState.users = sessionState.users.filter(u => u.id !== conn.peer); 
                 broadcast({ type: 'user-list-update', users: sessionState.users }); 
             }
@@ -576,7 +764,10 @@
 
         // --- UI & APP Logic ---
         function showView(isInitial) {
-            setLoading(false, createRoomBtn); setLoading(false, joinRoomBtn);
+            setLoading(false, createRoomBtn); 
+            setLoading(false, joinRoomBtn);
+            setLoading(false, createTwowayBtn); 
+            setLoading(false, joinTwowayBtn);
             initialView.classList.toggle('hidden', !isInitial);
             mainView.classList.toggle('hidden', isInitial);
         }
@@ -584,19 +775,30 @@
         function updateUI() {
             userCount.textContent = sessionState.users.length;
             modalUserList.innerHTML = sessionState.users.map(user => `<li class="flex items-center space-x-3 p-2 rounded-md ${user.id === myPeerId ? 'bg-blue-50 dark:bg-blue-900/50' : ''}"><span class="w-2.5 h-2.5 rounded-full ${user.id === myPeerId || connections.has(user.id) ? 'bg-green-500' : 'bg-gray-400'}"></span><span class="font-medium">${user.username} ${user.id === hostId ? '<span class="text-xs font-normal text-yellow-500">(Host)</span>' : ''}</span></li>`).join('');
-            hostControls.classList.toggle('hidden', !isHost);
-            hostPanel.classList.toggle('hidden', !isHost || !sessionState.isPrivate);
-            manualSyncBtn.classList.toggle('hidden', isHost);
-            if(isHost) { accessCodesList.innerHTML = sessionState.accessCodes.map(c => `<div class="flex justify-between items-center p-1 rounded ${c.usedBy ? 'bg-gray-200 dark:bg-gray-600' : 'bg-gray-100 dark:bg-gray-700'}"><code class="${c.usedBy ? 'line-through text-gray-500' : ''}">${c.code}</code><span class="text-xs text-gray-400">${c.usedBy ? `Used` : 'Unused'}</span></div>`).join(''); }
+            
+            hostControls.classList.toggle('hidden', !(sessionState.isTwoWay || isHost));
+            hostPanel.classList.toggle('hidden', !isHost || !sessionState.isPrivate || sessionState.isTwoWay);
+            manualSyncBtn.classList.toggle('hidden', sessionState.isTwoWay || isHost);
+            twowayBadge.classList.toggle('hidden', !sessionState.isTwoWay);
+            
+            if(isHost && !sessionState.isTwoWay) { 
+                accessCodesList.innerHTML = sessionState.accessCodes.map(c => `<div class="flex justify-between items-center p-1 rounded ${c.usedBy ? 'bg-gray-200 dark:bg-gray-600' : 'bg-gray-100 dark:bg-gray-700'}"><code class="${c.usedBy ? 'line-through text-gray-500' : ''}">${c.code}</code><span class="text-xs text-gray-400">${c.usedBy ? `Used` : 'Unused'}</span></div>`).join(''); 
+            }
+            
             sessionTitleDisplay.textContent = sessionState.title;
             roomIdDisplay.textContent = hostId;
-            syncTimeLabel.textContent = isHost ? "Host Time:" : "Sync Time:";
+            syncTimeLabel.textContent = "Time:";
 
             chatMessages.innerHTML = '';
             sessionState.chat.forEach(msg => {
                 const div = document.createElement('div');
-                if (msg.isSystem) { div.className = 'system-message text-center my-2'; div.innerHTML = `<span class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">${msg.text}</span>`; } 
-                else { div.className = 'chat-message mb-3 max-w-lg'; div.innerHTML = `<div class="p-3 rounded-lg inline-block bg-gray-200 dark:bg-gray-700"><p class="font-bold text-sm text-blue-400">${msg.username}</p><p>${msg.text}</p></div><p class="text-xs text-gray-400 mt-1">${msg.timestamp}</p>`; }
+                if (msg.isSystem) { 
+                    div.className = 'system-message text-center my-2'; 
+                    div.innerHTML = `<span class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">${msg.text}</span>`; 
+                } else { 
+                    div.className = 'chat-message mb-3 max-w-lg'; 
+                    div.innerHTML = `<div class="p-3 rounded-lg inline-block ${msg.username === localState.username ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}"><p class="font-bold text-sm ${msg.username === localState.username ? 'text-white' : 'text-blue-400'}">${msg.username}</p><p>${msg.text}</p></div><p class="text-xs text-gray-400 mt-1">${msg.timestamp}</p>`; 
+                }
                 chatMessages.appendChild(div);
             });
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -655,12 +857,14 @@
         function addSystemMessage(text) {
             const message = { isSystem: true, text };
             sessionState.chat.push(message);
-            if(isHost) broadcast({type: 'system', message});
+            if(sessionState.isTwoWay || isHost) broadcast({type: 'system', message});
             updateUI();
         }
         
         function generateCodes() {
-            for (let i = 0; i < 5; i++) { sessionState.accessCodes.push({ code: Math.random().toString(36).substring(2, 8).toUpperCase(), usedBy: null }); }
+            for (let i = 0; i < 5; i++) { 
+                sessionState.accessCodes.push({ code: Math.random().toString(36).substring(2, 8).toUpperCase(), usedBy: null }); 
+            }
             updateUI();
         }
         
@@ -716,9 +920,21 @@
         }
         
         function setStatus(text) { statusText.textContent = text; }
-        function setLoading(isLoading, button) { button.disabled = isLoading; button.innerHTML = isLoading ? loadingSpinner + `<span class="ml-2">Connecting...</span>` : (button.id.includes('create') ? 'Create New Room' : 'Join Room'); }
-        function showToast(message) { toast.textContent = message; toast.classList.remove('opacity-0', 'translate-y-3'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-3'), 3000); }
-        function showSyncNotice(message) { guestSyncNotice.textContent = message; guestSyncNotice.classList.remove('opacity-0', '-translate-y-4'); setTimeout(() => { guestSyncNotice.classList.add('opacity-0', '-translate-y-4'); }, 2500); }
+        function setLoading(isLoading, button) { 
+            button.disabled = isLoading; 
+            const originalText = button.textContent;
+            button.innerHTML = isLoading ? loadingSpinner + `<span class="ml-2">Connecting...</span>` : originalText; 
+        }
+        function showToast(message) { 
+            toast.textContent = message; 
+            toast.classList.remove('opacity-0', 'translate-y-3'); 
+            setTimeout(() => toast.classList.add('opacity-0', 'translate-y-3'), 3000); 
+        }
+        function showSyncNotice(message) { 
+            guestSyncNotice.textContent = message; 
+            guestSyncNotice.classList.remove('opacity-0', '-translate-y-4'); 
+            setTimeout(() => { guestSyncNotice.classList.add('opacity-0', '-translate-y-4'); }, 2500); 
+        }
         
         function formatTime(totalSeconds) {
             if (typeof totalSeconds !== 'number' || isNaN(totalSeconds)) return '--:--';
@@ -727,13 +943,18 @@
             const minutes = Math.floor((totalSeconds % 3600) / 60);
             const seconds = totalSeconds % 60;
             const paddedSeconds = seconds.toString().padStart(2, '0');
-            if (hours > 0) { const paddedMinutes = minutes.toString().padStart(2, '0'); return `${hours}:${paddedMinutes}:${paddedSeconds}`; }
+            if (hours > 0) { 
+                const paddedMinutes = minutes.toString().padStart(2, '0'); 
+                return `${hours}:${paddedMinutes}:${paddedSeconds}`; 
+            }
             return `${minutes}:${paddedSeconds}`;
         }
         
         // --- Event Listeners ---
-        createRoomBtn.addEventListener('click', () => initializePeerJS(true));
-        joinRoomBtn.addEventListener('click', () => initializePeerJS(false));
+        createRoomBtn.addEventListener('click', () => initializePeerJS(true, false));
+        joinRoomBtn.addEventListener('click', () => initializePeerJS(false, false));
+        createTwowayBtn.addEventListener('click', () => initializePeerJS(true, true));
+        joinTwowayBtn.addEventListener('click', () => initializePeerJS(false, true));
         leaveRoomBtn.addEventListener('click', leaveRoom);
         loadVideoBtn.addEventListener('click', loadVideo);
         sendChatBtn.addEventListener('click', sendChatMessage);
@@ -781,6 +1002,7 @@
         });
         
         usernameInputInitial.value = localStorage.getItem('syncwave_username') || '';
+        usernameInputTwoway.value = localStorage.getItem('syncwave_username') || '';
     </script>
 </body>
 </html>
