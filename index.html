@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SyncWave - P2P Watch Party</title>
+    <title>Sync - P2P Watch Party</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -50,7 +50,7 @@
         <div id="main-view" class="hidden">
             <header class="mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 w-full md:w-auto">
-                    <h1 class="text-2xl font-extrabold text-blue-600 dark:text-blue-400 flex-shrink-0">SyncWave</h1>
+                    <h1 class="text-2xl font-extrabold text-blue-600 dark:text-blue-400 flex-shrink-0">Sync</h1>
                     
                     <div class="border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-gray-700 pt-2 sm:pt-0 sm:pl-6">
                         <h2 id="session-title-display" class="text-xl font-bold"></h2>
@@ -126,7 +126,7 @@
         const loadingSpinner = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
         
         let player, ytReady = false, playerReady = false;
-        let prevTime = 0, syncCheckInterval = null;
+        let prevTime = 0, syncCheckInterval = null, guestTimeUpdateInterval = null;
 
         // --- DOM Elements ---
         const $ = (id) => document.getElementById(id);
@@ -153,7 +153,6 @@
 
         window.onYouTubeIframeAPIReady = function() {
             ytReady = true;
-            console.log('YouTube API Ready');
         };
 
         function createPlayer(videoId) {
@@ -184,13 +183,12 @@
 
         function onPlayerReady(event) {
             playerReady = true;
-            console.log('Player Ready');
             
             if (isHost) {
                 startSyncCheck();
             } else {
-                // Auto-sync on join
                 syncToHost();
+                startGuestTimeUpdate();
             }
         }
 
@@ -246,24 +244,37 @@
             }, 500);
         }
         
-        // NEW: Request current timestamp from host before syncing
-        function requestSyncFromHost() {
-            if (isHost || !localState.hostConnection) return;
+        // NEW: Continuously update guest's display of host time
+        function startGuestTimeUpdate() {
+            if (guestTimeUpdateInterval) clearInterval(guestTimeUpdateInterval);
             
-            // Send sync request to host
+            guestTimeUpdateInterval = setInterval(() => {
+                if (isHost || !localState.hostConnection || !localState.hostConnection.open) return;
+                
+                // Request current time every 2 seconds
+                try {
+                    localState.hostConnection.send({ type: 'request-current-time' });
+                } catch(e) {
+                    console.error('Failed to request time:', e);
+                }
+            }, 2000);
+        }
+        
+        // Sync button click - immediately sync
+        function requestManualSync() {
+            if (isHost || !localState.hostConnection || !localState.hostConnection.open) {
+                showToast('Not connected to host');
+                return;
+            }
+            
             try {
-                localState.hostConnection.send({ 
-                    type: 'request-current-time',
-                    requesterId: myPeerId
-                });
-                showToast('Requesting sync from host...');
+                localState.hostConnection.send({ type: 'request-sync' });
+                showToast('Syncing...');
             } catch(e) {
-                console.error('Error requesting sync:', e);
                 showToast('Failed to sync. Host may be offline.');
             }
         }
         
-        // Sync to specific timestamp
         function syncToHost(timestamp = null, isPlaying = null) {
             if (!player || !playerReady || isHost) return;
             
@@ -281,8 +292,6 @@
                 player.pauseVideo();
                 showSyncNotice(`🔄 Synced to ${formatTime(targetTime)} - Paused`);
             }
-            
-            showToast('Synced to host!');
         }
         
         // --- P2P Logic ---
@@ -296,9 +305,7 @@
             if (peer) {
                 try {
                     peer.destroy();
-                } catch(e) {
-                    console.log('Error destroying peer:', e);
-                }
+                } catch(e) {}
                 peer = null;
             }
             
@@ -327,8 +334,7 @@
                         { urls: 'stun:stun.l.google.com:19302' },
                         { urls: 'stun:global.stun.twilio.com:3478' }
                     ]
-                },
-                debug: 0
+                }
             });
 
             peer.on('open', id => {
@@ -344,10 +350,9 @@
             
             peer.on('error', err => {
                 clearTimeout(localState.connectionTimeout);
-                console.error('Peer error:', err);
                 
                 if (err.type === 'peer-unavailable') {
-                    setStatus('Host is offline. Please check Room ID or try again later.');
+                    setStatus('Host is offline. Please check Room ID.');
                     setLoading(false, joinRoomBtn);
                     
                     if (!asHost && localState.retryCount < 3) {
@@ -357,12 +362,6 @@
                             initializePeerJS(false);
                         }, 3000);
                     }
-                } else if (err.type === 'network') {
-                    setStatus('Network error. Check your internet connection.');
-                    setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
-                } else if (err.type === 'server-error') {
-                    setStatus('Server error. Please try again in a moment.');
-                    setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
                 } else {
                     setStatus(`Error: ${err.type}. Please try again.`);
                     setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
@@ -370,7 +369,6 @@
             });
 
             peer.on('disconnected', () => {
-                console.log('Peer disconnected, attempting reconnect...');
                 if (!peer.destroyed) {
                     peer.reconnect();
                 }
@@ -395,32 +393,16 @@
                 reliable: true
             });
             
-            // Store host connection for guests
-            localState.hostConnection = conn;
-            
-            const connTimeout = setTimeout(() => {
-                if (!conn.open) {
-                    setStatus('Could not connect to host. Retrying...');
-                    conn.close();
-                    
-                    if (localState.retryCount < 3) {
-                        localState.retryCount++;
-                        setTimeout(() => initializePeerJS(false), 2000);
-                    }
-                }
-            }, 10000);
-            
-            conn.on('open', () => {
-                clearTimeout(connTimeout);
-                localState.retryCount = 0;
-                setStatus('');
-            });
-            
             handleConnection(conn);
         }
 
         function handleConnection(conn) {
             connections.set(conn.peer, conn);
+            
+            // IMPORTANT: Store host connection for guests
+            if (!isHost) {
+                localState.hostConnection = conn;
+            }
             
             conn.on('open', () => {
                 if (isHost) {
@@ -482,31 +464,53 @@
                     updateUI(); 
                     break;
                 
-                // NEW: Handle sync request from guest
+                // Handle time request from guest
                 case 'request-current-time':
                     if (isHost && player && playerReady) {
                         const currentTime = player.getCurrentTime();
                         const currentState = player.getPlayerState();
-                        const isPlaying = currentState === YT.PlayerState.PLAYING;
+                        const playing = currentState === YT.PlayerState.PLAYING;
                         
-                        // Send current timestamp back to requester
                         conn.send({
-                            type: 'current-time-response',
+                            type: 'time-update',
                             time: currentTime,
-                            isPlaying: isPlaying
+                            isPlaying: playing
                         });
                     }
                     break;
                 
-                // NEW: Handle timestamp response
-                case 'current-time-response':
+                // Handle sync request from guest (manual sync button)
+                case 'request-sync':
+                    if (isHost && player && playerReady) {
+                        const currentTime = player.getCurrentTime();
+                        const currentState = player.getPlayerState();
+                        const playing = currentState === YT.PlayerState.PLAYING;
+                        
+                        conn.send({
+                            type: 'sync-response',
+                            time: currentTime,
+                            isPlaying: playing
+                        });
+                    }
+                    break;
+                
+                // Update displayed time (continuous updates)
+                case 'time-update':
                     if (!isHost) {
                         sessionState.hostTimestamp = data.time;
                         sessionState.isPlaying = data.isPlaying;
                         hostTimeDisplay.textContent = formatTime(data.time);
-                        
-                        // Sync to the received timestamp
+                    }
+                    break;
+                
+                // Sync player (manual sync button response)
+                case 'sync-response':
+                    if (!isHost) {
+                        sessionState.hostTimestamp = data.time;
+                        sessionState.isPlaying = data.isPlaying;
+                        hostTimeDisplay.textContent = formatTime(data.time);
                         syncToHost(data.time, data.isPlaying);
+                        showToast('Synced successfully!');
                     }
                     break;
             }
@@ -565,9 +569,7 @@
                 if (peerId !== excludePeerId && conn.open) {
                     try {
                         conn.send(data);
-                    } catch(e) {
-                        console.error('Error broadcasting to', peerId, e);
-                    }
+                    } catch(e) {}
                 }
             }
         }
@@ -707,11 +709,12 @@
         }
         
         function leaveRoom() { 
-            if (peer) {
-                peer.destroy();
-            }
+            if (peer) peer.destroy();
+            if (syncCheckInterval) clearInterval(syncCheckInterval);
+            if (guestTimeUpdateInterval) clearInterval(guestTimeUpdateInterval);
             window.location.reload(); 
         }
+        
         function setStatus(text) { statusText.textContent = text; }
         function setLoading(isLoading, button) { button.disabled = isLoading; button.innerHTML = isLoading ? loadingSpinner + `<span class="ml-2">Connecting...</span>` : (button.id.includes('create') ? 'Create New Room' : 'Join Room'); }
         function showToast(message) { toast.textContent = message; toast.classList.remove('opacity-0', 'translate-y-3'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-3'), 3000); }
@@ -736,9 +739,7 @@
         sendChatBtn.addEventListener('click', sendChatMessage);
         chatInput.addEventListener('keypress', e => e.key === 'Enter' && sendChatMessage());
         generateCodesBtn.addEventListener('click', generateCodes);
-        
-        // UPDATED: Sync button now requests current time from host
-        manualSyncBtn.addEventListener('click', requestSyncFromHost);
+        manualSyncBtn.addEventListener('click', requestManualSync);
         
         copyRoomIdBtn.addEventListener('click', () => {
             const textArea = document.createElement('textarea');
@@ -776,12 +777,9 @@
         exportChatBtn.addEventListener('click', exportChat);
         
         window.addEventListener('beforeunload', () => {
-            if (peer) {
-                peer.destroy();
-            }
+            if (peer) peer.destroy();
         });
         
-        // --- On Load ---
         usernameInputInitial.value = localStorage.getItem('syncwave_username') || '';
     </script>
 </body>
