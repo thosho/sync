@@ -37,13 +37,13 @@
                     <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="room-type-toggle" class="sr-only peer"><div class="w-11 h-6 bg-gray-300 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div></label>
                     <span>Private</span>
                 </div>
-                <button id="create-room-btn" class="w-full bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-md transition-opacity opacity-50 cursor-not-allowed" disabled>Create New Room</button>
+                <button id="create-room-btn" class="w-full bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-md">Create New Room</button>
                 <hr class="border-gray-300 dark:border-gray-600">
                 <p class="font-bold text-lg text-center">Join a Room</p>
                 <input type="text" id="join-room-id-input" placeholder="Enter Host's Room ID" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
-                <button id="join-room-btn" class="w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-md transition-opacity opacity-50 cursor-not-allowed" disabled>Join Room</button>
+                <button id="join-room-btn" class="w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-md">Join Room</button>
             </div>
-            <p id="status-text" class="text-sm text-center text-gray-500 dark:text-gray-400 mt-4 h-5">Initializing Player...</p>
+            <p id="status-text" class="text-sm text-center text-red-500 dark:text-red-400 mt-4 h-5"></p>
         </div>
 
         <!-- Main View -->
@@ -123,25 +123,19 @@
         const toast = $('toast');
         
         // --- YouTube API ---
-        window.onYouTubeIframeAPIReady = () => {
-            setStatus('Player ready. You can now create or join a room.');
-            createRoomBtn.disabled = false;
-            joinRoomBtn.disabled = false;
-            createRoomBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            joinRoomBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        };
+        function onYouTubeIframeAPIReady() { /* This is called by the API, but our poller is more robust */ }
 
         function createPlayer(videoId) {
-            if (player) { player.destroy(); }
-            player = new YT.Player('player', {
-                height: '100%', width: '100%', videoId: videoId,
-                playerVars: { 'playsinline': 1, 'rel': 0, 'autoplay': 1, 'controls': isHost ? 1 : 0 },
-                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
+            return new Promise((resolve) => {
+                if (player) { player.destroy(); }
+                player = new YT.Player('player', {
+                    height: '100%', width: '100%', videoId: videoId,
+                    playerVars: { 'playsinline': 1, 'rel': 0, 'autoplay': 1, 'controls': isHost ? 1 : 0 },
+                    events: { 'onReady': () => resolve(player), 'onStateChange': onPlayerStateChange }
+                });
             });
         }
         
-        function onPlayerReady(event) { if (isHost) event.target.playVideo(); }
-
         function onPlayerStateChange(event) {
             if (!isHost || localState.syncInProgress) return;
             const state = event.data;
@@ -158,6 +152,25 @@
                  if(localState.hostSeekInterval) clearInterval(localState.hostSeekInterval);
             }
         }
+        
+        function ensurePlayerAPIReady() {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const interval = setInterval(() => {
+                    if (typeof YT !== 'undefined' && typeof YT.Player !== 'undefined') {
+                        clearInterval(interval);
+                        resolve();
+                    } else {
+                        attempts++;
+                        if (attempts > 50) { // 10 seconds timeout
+                            clearInterval(interval);
+                            reject(new Error("YouTube Player API failed to load."));
+                        }
+                    }
+                }, 200);
+            });
+        }
+
 
         // --- P2P Logic ---
         function initializePeerJS(asHost) {
@@ -170,7 +183,7 @@
             
             clearTimeout(localState.connectionTimeout);
             localState.connectionTimeout = setTimeout(() => {
-                setStatus('Connection timed out. Please try again.');
+                setStatus('P2P connection timed out. Please try again.');
                 setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
                 if (peer) peer.destroy();
             }, 8000);
@@ -187,7 +200,7 @@
             });
             peer.on('error', err => {
                 clearTimeout(localState.connectionTimeout);
-                setStatus(`Error: ${err.message}. Please refresh.`);
+                setStatus(`P2P Error: ${err.message}. Please refresh.`);
                 setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
             });
         }
@@ -197,7 +210,7 @@
             sessionState.title = sessionTitleInput.value.trim() || "My Watch Party";
             sessionState.isPrivate = roomTypeToggle.checked;
             peer.on('connection', conn => handleConnection(conn));
-            showView(false); createPlayer(null); updateUI();
+            showView(false); updateUI();
         }
 
         function setupGuest() {
@@ -214,7 +227,7 @@
             conn.on('close', () => onUserDisconnect(conn));
         }
         
-        function onDataReceived(conn, data) {
+        async function onDataReceived(conn, data) {
             switch(data.type) {
                 case 'auth-code':
                     const code = sessionState.accessCodes.find(c => c.code === data.code && !c.usedBy);
@@ -228,9 +241,9 @@
                 case 'auth-success': conn.send({type: 'sync-request'}); break;
                 case 'auth-fail': alert('Invalid access code.'); leaveRoom(); break;
                 case 'sync-request': conn.send({ type: 'sync-state', state: sessionState }); break;
-                case 'sync-state': sessionState = data.state; showView(false); createPlayer(sessionState.videoId); updateUI(); break;
+                case 'sync-state': sessionState = data.state; showView(false); await loadPlayerForGuest(sessionState.videoId); updateUI(); break;
                 case 'user-list-update': sessionState.users = data.users; updateUI(); break;
-                case 'video-change': sessionState.videoId = data.videoId; createPlayer(data.videoId); break;
+                case 'video-change': sessionState.videoId = data.videoId; await loadPlayerForGuest(data.videoId); break;
                 case 'playback-state': if (!isHost && player) { if (data.state === YT.PlayerState.PLAYING) player.playVideo(); else if (data.state === YT.PlayerState.PAUSED) player.pauseVideo(); } break;
                 case 'playback-time': if (!isHost && player) { const timeDiff = Math.abs(player.getCurrentTime() - data.time); if (timeDiff > 2.5) { player.seekTo(data.time, true); } } break;
                 case 'chat': sessionState.chat.push(data.message); updateUI(); break;
@@ -284,12 +297,27 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        function loadVideo() {
-            const url = videoUrlInput.value.trim();
-            const videoId = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/)?. [1];
-            if (videoId) { sessionState.videoId = videoId; createPlayer(videoId); broadcast({ type: 'video-change', videoId }); } 
-            else { alert('Invalid YouTube URL. Please use a full YouTube video link.'); }
+        async function loadVideo() {
+            try {
+                await ensurePlayerAPIReady();
+                const url = videoUrlInput.value.trim();
+                const videoId = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/)?. [1];
+                if (videoId) { sessionState.videoId = videoId; await createPlayer(videoId); broadcast({ type: 'video-change', videoId }); } 
+                else { alert('Invalid YouTube URL. Please use a full YouTube video link.'); }
+            } catch (error) {
+                alert(error.message);
+            }
         }
+
+        async function loadPlayerForGuest(videoId) {
+            try {
+                await ensurePlayerAPIReady();
+                await createPlayer(videoId);
+            } catch (error) {
+                alert("A guest failed to load the YouTube player. They may need to disable ad-blockers or check their network.");
+            }
+        }
+
 
         function sendChatMessage() {
             const text = chatInput.value.trim();
@@ -316,7 +344,7 @@
         function exportChat() {
             if (sessionState.chat.length === 0) { showToast('Chat is empty, nothing to export.'); return; }
             const chatLog = sessionState.chat.map(msg => { if (msg.isSystem) return `--- ${msg.text} ---`; return `[${msg.timestamp}] ${msg.username}: ${msg.text}`; }).join('\n');
-            const header = `Session: ${sessionState.title}\nVideo: https://youtu.be/${sessionState.videoId}\nExported: ${new Date().toLocaleString()}\n\n`;
+            const header = `Session: ${sessionState.title}\nVideo: https://youtu.be/${sessionState.videoId || ''}\nExported: ${new Date().toLocaleString()}\n\n`;
             const blob = new Blob([header + chatLog], { type: 'text/plain' });
             const anchor = document.createElement('a');
             anchor.download = `syncwave-chat-${hostId}.txt`;
@@ -343,8 +371,21 @@
         closeModalBtn.addEventListener('click', () => viewersModal.classList.add('hidden'));
         exportChatBtn.addEventListener('click', exportChat);
         
-        // --- On Load ---
-        usernameInputInitial.value = localStorage.getItem('syncwave_username') || '';
+        // --- App Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            ensurePlayerAPIReady()
+                .then(() => {
+                    setStatus('Player ready. You can now create or join a room.');
+                    createRoomBtn.disabled = false;
+                    joinRoomBtn.disabled = false;
+                    createRoomBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    joinRoomBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                })
+                .catch(error => {
+                    setStatus(error.message);
+                });
+            usernameInputInitial.value = localStorage.getItem('syncwave_username') || '';
+        });
     </script>
 </body>
 </html>
