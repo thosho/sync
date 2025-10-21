@@ -23,9 +23,8 @@
 
     <div id="app-container" class="w-full max-w-4xl mx-auto">
 
-        <!-- Initial View -->
         <div id="initial-view" class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-md mx-auto">
-            <h1 class="text-3xl font-extrabold mb-2 text-center">SyncWave</h1>
+            <h1 class="text-3xl font-extrabold mb-2 text-center text-blue-600 dark:text-blue-400">Sync</h1>
             <p class="text-gray-600 dark:text-gray-400 mb-6 text-center">Watch together, stay in sync.</p>
             <div class="space-y-4">
                 <input type="text" id="username-input-initial" placeholder="Enter Your Name" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -44,20 +43,26 @@
                 <button id="join-room-btn" class="w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-md">Join Room</button>
             </div>
             <p id="status-text" class="text-sm text-center text-red-500 dark:text-red-400 mt-4 h-5"></p>
-        </div>
+            
+            <p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-6">Designed by @Thosho Tech</p>
+            </div>
 
-        <!-- Main View -->
         <div id="main-view" class="hidden">
-            <header class="mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col md:flex-row justify-between items-center">
-                <div>
-                    <h1 id="session-title-display" class="text-2xl font-bold"></h1>
-                    <div class="flex items-center text-sm">
-                        <span class="text-gray-500 dark:text-gray-400 mr-2">Room ID:</span>
-                        <span id="room-id-display" class="font-mono text-blue-600 dark:text-blue-400"></span>
-                        <button id="copy-room-id-btn" title="Copy Room ID" class="ml-2 text-gray-500 hover:text-blue-600 p-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5-.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg></button>
+            <header class="mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 w-full md:w-auto">
+                    <h1 class="text-2xl font-extrabold text-blue-600 dark:text-blue-400 flex-shrink-0">SyncWave</h1>
+                    
+                    <div class="border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-gray-700 pt-2 sm:pt-0 sm:pl-6">
+                        <h2 id="session-title-display" class="text-xl font-bold"></h2>
+                        <div class="flex items-center text-sm">
+                            <span class="text-gray-500 dark:text-gray-400 mr-2">Room ID:</span>
+                            <span id="room-id-display" class="font-mono text-blue-600 dark:text-blue-400"></span>
+                            <button id="copy-room-id-btn" title="Copy Room ID" class="ml-2 text-gray-500 hover:text-blue-600 p-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5-.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg></button>
+                        </div>
                     </div>
                 </div>
-                <button id="leave-room-btn" class="mt-3 md:mt-0 w-full md:w-auto bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition">Leave Room</button>
+                
+                <button id="leave-room-btn" class="w-full md:w-auto bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition flex-shrink-0">Leave Room</button>
             </header>
             
             <div id="host-controls" class="hidden mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-3">
@@ -79,16 +84,19 @@
             
             <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
                 <div class="flex justify-between items-center mb-3 border-b border-gray-200 dark:border-gray-700 pb-2 flex-wrap gap-2">
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-4 flex-wrap">
                         <h2 class="text-xl font-semibold">Live Discussion</h2>
-                        <div id="sync-time-container" class="text-sm font-mono p-1 bg-gray-100 dark:bg-gray-700 rounded">
-                            <span id="sync-time-label">Sync Time:</span>
-                            <span id="host-time-display" class="font-bold">--:--</span>
+                        <div class="flex items-center gap-2">
+                            <div id="sync-time-container" class="text-sm font-mono p-1 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span id="sync-time-label">Sync Time:</span>
+                                <span id="host-time-display" class="font-bold">--:--</span>
+                            </div>
+                            <button id="manual-sync-btn" class="hidden text-xs bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-md">Sync</button>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2">
                         <button id="viewers-btn" class="text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium py-1 px-3 rounded-md">Viewers (<span id="user-count">0</span>)</button>
-                        <button id="export-chat-btn" class="text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium py-1 px-3 rounded-md">Export Chat</button>
+                        <button id="export-chat-btn" class="text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium py-1 px-3 rounded-md">Copy Chat</button>
                     </div>
                 </div>
                 <div id="chat-messages" class="h-64 overflow-y-auto mb-3 pr-2"></div>
@@ -113,8 +121,8 @@
         // --- State ---
         let peer, isHost = false, hostId = null, myPeerId = null;
         let connections = new Map();
-        let sessionState = { title: "Watch Party", videoId: null, hostTimestamp: 0, isPrivate: false, accessCodes: [], users: [], chat: [] };
-        let localState = { username: "", connectionTimeout: null, ignoreNextStateChange: false };
+        let sessionState = { title: "Watch Party", videoId: null, hostTimestamp: 0, isPlaying: false, isPrivate: false, accessCodes: [], users: [], chat: [] };
+        let localState = { username: "", connectionTimeout: null, ignoreNextStateChange: false, retryCount: 0, hostConnection: null };
         const loadingSpinner = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
         
         let player, ytReady = false, playerReady = false;
@@ -133,7 +141,9 @@
         const userCount = $('user-count'), chatMessages = $('chat-messages'), chatInput = $('chat-input'), sendChatBtn = $('send-chat-btn');
         const viewersBtn = $('viewers-btn'), exportChatBtn = $('export-chat-btn'), viewersModal = $('viewers-modal'), closeModalBtn = $('close-modal-btn'), modalUserList = $('modal-user-list');
         const hostTimeDisplay = $('host-time-display'), syncTimeLabel = $('sync-time-label');
+        const manualSyncBtn = $('manual-sync-btn');
         const toast = $('toast');
+        const copyRoomIdBtn = $('copy-room-id-btn');
         
         // --- YouTube IFrame API ---
         var tag = document.createElement('script');
@@ -177,8 +187,10 @@
             console.log('Player Ready');
             
             if (isHost) {
-                // Start monitoring player state changes
                 startSyncCheck();
+            } else {
+                // Auto-sync on join
+                syncToHost();
             }
         }
 
@@ -191,8 +203,8 @@
             const state = event.data;
             const currentTime = player.getCurrentTime();
             
-            // Broadcast state changes to all viewers
             if (state === YT.PlayerState.PLAYING) {
+                sessionState.isPlaying = true;
                 broadcast({ 
                     type: 'player-control', 
                     action: 'play',
@@ -200,6 +212,7 @@
                 });
                 addSystemMessage('Host started playing the video');
             } else if (state === YT.PlayerState.PAUSED) {
+                sessionState.isPlaying = false;
                 broadcast({ 
                     type: 'player-control', 
                     action: 'pause',
@@ -217,7 +230,6 @@
                 
                 const currentTime = player.getCurrentTime();
                 
-                // Check for seeking (jump in time > 1 second)
                 if (Math.abs(currentTime - prevTime) > 1.5) {
                     sessionState.hostTimestamp = currentTime;
                     broadcast({ 
@@ -234,6 +246,45 @@
             }, 500);
         }
         
+        // NEW: Request current timestamp from host before syncing
+        function requestSyncFromHost() {
+            if (isHost || !localState.hostConnection) return;
+            
+            // Send sync request to host
+            try {
+                localState.hostConnection.send({ 
+                    type: 'request-current-time',
+                    requesterId: myPeerId
+                });
+                showToast('Requesting sync from host...');
+            } catch(e) {
+                console.error('Error requesting sync:', e);
+                showToast('Failed to sync. Host may be offline.');
+            }
+        }
+        
+        // Sync to specific timestamp
+        function syncToHost(timestamp = null, isPlaying = null) {
+            if (!player || !playerReady || isHost) return;
+            
+            const targetTime = timestamp !== null ? timestamp : sessionState.hostTimestamp;
+            const shouldPlay = isPlaying !== null ? isPlaying : sessionState.isPlaying;
+            
+            localState.ignoreNextStateChange = true;
+            
+            player.seekTo(targetTime, true);
+            
+            if (shouldPlay) {
+                player.playVideo();
+                showSyncNotice(`🔄 Synced to ${formatTime(targetTime)} - Playing`);
+            } else {
+                player.pauseVideo();
+                showSyncNotice(`🔄 Synced to ${formatTime(targetTime)} - Paused`);
+            }
+            
+            showToast('Synced to host!');
+        }
+        
         // --- P2P Logic ---
         function initializePeerJS(asHost) {
             localState.username = usernameInputInitial.value.trim();
@@ -241,29 +292,88 @@
             localStorage.setItem('syncwave_username', localState.username);
             
             setLoading(true, asHost ? createRoomBtn : joinRoomBtn);
-            if (peer) peer.destroy();
+            
+            if (peer) {
+                try {
+                    peer.destroy();
+                } catch(e) {
+                    console.log('Error destroying peer:', e);
+                }
+                peer = null;
+            }
+            
+            connections.clear();
             
             clearTimeout(localState.connectionTimeout);
             localState.connectionTimeout = setTimeout(() => {
-                setStatus('P2P connection timed out. Please try again.');
+                setStatus('Connection timed out. Retrying...');
                 setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
-                if (peer) peer.destroy();
-            }, 8000);
+                
+                if (!asHost && localState.retryCount < 3) {
+                    localState.retryCount++;
+                    setTimeout(() => {
+                        setStatus(`Retrying... (${localState.retryCount}/3)`);
+                        initializePeerJS(false);
+                    }, 2000);
+                } else {
+                    setStatus('Could not connect. Please check Room ID and try again.');
+                    localState.retryCount = 0;
+                }
+            }, 15000);
 
-            peer = new Peer();
+            peer = new Peer({
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:global.stun.twilio.com:3478' }
+                    ]
+                },
+                debug: 0
+            });
 
             peer.on('open', id => {
                 clearTimeout(localState.connectionTimeout);
                 myPeerId = id;
+                localState.retryCount = 0;
+                
                 if (!sessionState.users.some(u => u.id === myPeerId)) {
                     sessionState.users.push({ id: myPeerId, username: localState.username });
                 }
                 if (asHost) setupHost(); else setupGuest();
             });
+            
             peer.on('error', err => {
                 clearTimeout(localState.connectionTimeout);
-                setStatus(`P2P Error: ${err.message}. Please refresh.`);
-                setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
+                console.error('Peer error:', err);
+                
+                if (err.type === 'peer-unavailable') {
+                    setStatus('Host is offline. Please check Room ID or try again later.');
+                    setLoading(false, joinRoomBtn);
+                    
+                    if (!asHost && localState.retryCount < 3) {
+                        localState.retryCount++;
+                        setTimeout(() => {
+                            setStatus(`Reconnecting... (${localState.retryCount}/3)`);
+                            initializePeerJS(false);
+                        }, 3000);
+                    }
+                } else if (err.type === 'network') {
+                    setStatus('Network error. Check your internet connection.');
+                    setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
+                } else if (err.type === 'server-error') {
+                    setStatus('Server error. Please try again in a moment.');
+                    setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
+                } else {
+                    setStatus(`Error: ${err.type}. Please try again.`);
+                    setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
+                }
+            });
+
+            peer.on('disconnected', () => {
+                console.log('Peer disconnected, attempting reconnect...');
+                if (!peer.destroyed) {
+                    peer.reconnect();
+                }
             });
         }
 
@@ -273,12 +383,39 @@
             sessionState.isPrivate = roomTypeToggle.checked;
             peer.on('connection', conn => handleConnection(conn));
             showView(false); updateUI();
+            setStatus('');
         }
 
         function setupGuest() {
             hostId = joinRoomIdInput.value.trim();
             if (!hostId) { setStatus('Host ID is required.'); setLoading(false, joinRoomBtn); return; }
-            const conn = peer.connect(hostId, { metadata: { username: localState.username } });
+            
+            const conn = peer.connect(hostId, { 
+                metadata: { username: localState.username },
+                reliable: true
+            });
+            
+            // Store host connection for guests
+            localState.hostConnection = conn;
+            
+            const connTimeout = setTimeout(() => {
+                if (!conn.open) {
+                    setStatus('Could not connect to host. Retrying...');
+                    conn.close();
+                    
+                    if (localState.retryCount < 3) {
+                        localState.retryCount++;
+                        setTimeout(() => initializePeerJS(false), 2000);
+                    }
+                }
+            }, 10000);
+            
+            conn.on('open', () => {
+                clearTimeout(connTimeout);
+                localState.retryCount = 0;
+                setStatus('');
+            });
+            
             handleConnection(conn);
         }
 
@@ -293,7 +430,13 @@
             });
             
             conn.on('data', data => onDataReceived(conn, data));
+            
             conn.on('close', () => onUserDisconnect(conn));
+            
+            conn.on('error', err => {
+                console.error('Connection error:', err);
+                onUserDisconnect(conn);
+            });
         }
         
         function onDataReceived(conn, data) {
@@ -318,7 +461,10 @@
                         createPlayer(sessionState.videoId);
                     }
                     break;
-                case 'user-list-update': sessionState.users = data.users; updateUI(); break;
+                case 'user-list-update': 
+                    sessionState.users = data.users; 
+                    updateUI(); 
+                    break;
                 case 'video-change': 
                     sessionState.videoId = data.videoId;
                     createPlayer(data.videoId);
@@ -327,8 +473,42 @@
                 case 'player-control':
                     handlePlayerControl(data);
                     break;
-                case 'chat': sessionState.chat.push(data.message); updateUI(); break;
-                case 'system': sessionState.chat.push(data.message); updateUI(); break;
+                case 'chat': 
+                    sessionState.chat.push(data.message); 
+                    updateUI(); 
+                    break;
+                case 'system': 
+                    sessionState.chat.push(data.message); 
+                    updateUI(); 
+                    break;
+                
+                // NEW: Handle sync request from guest
+                case 'request-current-time':
+                    if (isHost && player && playerReady) {
+                        const currentTime = player.getCurrentTime();
+                        const currentState = player.getPlayerState();
+                        const isPlaying = currentState === YT.PlayerState.PLAYING;
+                        
+                        // Send current timestamp back to requester
+                        conn.send({
+                            type: 'current-time-response',
+                            time: currentTime,
+                            isPlaying: isPlaying
+                        });
+                    }
+                    break;
+                
+                // NEW: Handle timestamp response
+                case 'current-time-response':
+                    if (!isHost) {
+                        sessionState.hostTimestamp = data.time;
+                        sessionState.isPlaying = data.isPlaying;
+                        hostTimeDisplay.textContent = formatTime(data.time);
+                        
+                        // Sync to the received timestamp
+                        syncToHost(data.time, data.isPlaying);
+                    }
+                    break;
             }
         }
         
@@ -339,11 +519,13 @@
             
             switch(data.action) {
                 case 'play':
+                    sessionState.isPlaying = true;
                     player.seekTo(data.time, true);
                     player.playVideo();
                     showSyncNotice('▶️ Playing');
                     break;
                 case 'pause':
+                    sessionState.isPlaying = false;
                     player.seekTo(data.time, true);
                     player.pauseVideo();
                     showSyncNotice('⏸️ Paused');
@@ -369,13 +551,25 @@
 
         function onUserDisconnect(conn) {
             const user = sessionState.users.find(u => u.id === conn.peer);
-            if(user) { addSystemMessage(`${user.username} has left.`); sessionState.users = sessionState.users.filter(u => u.id !== conn.peer); broadcast({ type: 'user-list-update', users: sessionState.users }); }
+            if(user) { 
+                addSystemMessage(`${user.username} has left.`); 
+                sessionState.users = sessionState.users.filter(u => u.id !== conn.peer); 
+                broadcast({ type: 'user-list-update', users: sessionState.users }); 
+            }
             connections.delete(conn.peer);
             updateUI();
         }
         
         function broadcast(data, excludePeerId = null) {
-            for (const [peerId, conn] of connections.entries()) { if (peerId !== excludePeerId) conn.send(data); }
+            for (const [peerId, conn] of connections.entries()) { 
+                if (peerId !== excludePeerId && conn.open) {
+                    try {
+                        conn.send(data);
+                    } catch(e) {
+                        console.error('Error broadcasting to', peerId, e);
+                    }
+                }
+            }
         }
 
         // --- UI & APP Logic ---
@@ -390,6 +584,7 @@
             modalUserList.innerHTML = sessionState.users.map(user => `<li class="flex items-center space-x-3 p-2 rounded-md ${user.id === myPeerId ? 'bg-blue-50 dark:bg-blue-900/50' : ''}"><span class="w-2.5 h-2.5 rounded-full ${user.id === myPeerId || connections.has(user.id) ? 'bg-green-500' : 'bg-gray-400'}"></span><span class="font-medium">${user.username} ${user.id === hostId ? '<span class="text-xs font-normal text-yellow-500">(Host)</span>' : ''}</span></li>`).join('');
             hostControls.classList.toggle('hidden', !isHost);
             hostPanel.classList.toggle('hidden', !isHost || !sessionState.isPrivate);
+            manualSyncBtn.classList.toggle('hidden', isHost);
             if(isHost) { accessCodesList.innerHTML = sessionState.accessCodes.map(c => `<div class="flex justify-between items-center p-1 rounded ${c.usedBy ? 'bg-gray-200 dark:bg-gray-600' : 'bg-gray-100 dark:bg-gray-700'}"><code class="${c.usedBy ? 'line-through text-gray-500' : ''}">${c.code}</code><span class="text-xs text-gray-400">${c.usedBy ? `Used` : 'Unused'}</span></div>`).join(''); }
             sessionTitleDisplay.textContent = sessionState.title;
             roomIdDisplay.textContent = hostId;
@@ -415,6 +610,8 @@
             }
             
             sessionState.videoId = videoId;
+            sessionState.hostTimestamp = 0;
+            sessionState.isPlaying = false;
             createPlayer(videoId);
             broadcast({ type: 'video-change', videoId: videoId });
             updateUI();
@@ -422,7 +619,6 @@
         }
         
         function extractYouTubeId(url) {
-            // If it's already just an ID (11 characters)
             if (url.length === 11 && !url.includes('/') && !url.includes('.')) {
                 return url;
             }
@@ -430,17 +626,14 @@
             try {
                 const urlObj = new URL(url);
                 
-                // youtube.com/watch?v=ID
                 if (urlObj.hostname.includes('youtube.com') && urlObj.searchParams.has('v')) {
                     return urlObj.searchParams.get('v');
                 }
                 
-                // youtu.be/ID
                 if (urlObj.hostname === 'youtu.be') {
                     return urlObj.pathname.slice(1);
                 }
             } catch (e) {
-                // Not a valid URL, might be an ID
                 return url.length === 11 ? url : null;
             }
             
@@ -470,18 +663,55 @@
         }
         
         function exportChat() {
-            if (sessionState.chat.length === 0) { showToast('Chat is empty, nothing to export.'); return; }
-            const chatLog = sessionState.chat.map(msg => { if (msg.isSystem) return `--- ${msg.text} ---`; return `[${msg.timestamp}] ${msg.username}: ${msg.text}`; }).join('\n');
-            const header = `Session: ${sessionState.title}\nVideo: ${sessionState.videoId}\nExported: ${new Date().toLocaleString()}\n\n`;
-            const blob = new Blob([header + chatLog], { type: 'text/plain' });
-            const anchor = document.createElement('a');
-            anchor.download = `syncwave-chat-${hostId}.txt`;
-            anchor.href = URL.createObjectURL(blob);
-            anchor.click();
-            URL.revokeObjectURL(anchor.href);
+            if (sessionState.chat.length === 0) { 
+                showToast('Chat is empty'); 
+                return; 
+            }
+            
+            const chatLog = sessionState.chat.map(msg => { 
+                if (msg.isSystem) return `--- ${msg.text} ---`; 
+                return `[${msg.timestamp}] ${msg.username}: ${msg.text}`; 
+            }).join('\n');
+            
+            const header = `Session: ${sessionState.title}\nVideo: ${sessionState.videoId || 'N/A'}\nExported: ${new Date().toLocaleString()}\n\n`;
+            const content = header + chatLog;
+            
+            const textArea = document.createElement('textarea');
+            textArea.value = content;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            textArea.style.padding = '0';
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            textArea.style.background = 'transparent';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('Chat copied to clipboard!');
+                } else {
+                    prompt('Copy this chat:', content);
+                }
+            } catch (err) {
+                prompt('Copy this chat:', content);
+            }
+            
+            document.body.removeChild(textArea);
         }
         
-        function leaveRoom() { window.location.reload(); }
+        function leaveRoom() { 
+            if (peer) {
+                peer.destroy();
+            }
+            window.location.reload(); 
+        }
         function setStatus(text) { statusText.textContent = text; }
         function setLoading(isLoading, button) { button.disabled = isLoading; button.innerHTML = isLoading ? loadingSpinner + `<span class="ml-2">Connecting...</span>` : (button.id.includes('create') ? 'Create New Room' : 'Join Room'); }
         function showToast(message) { toast.textContent = message; toast.classList.remove('opacity-0', 'translate-y-3'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-3'), 3000); }
@@ -506,10 +736,50 @@
         sendChatBtn.addEventListener('click', sendChatMessage);
         chatInput.addEventListener('keypress', e => e.key === 'Enter' && sendChatMessage());
         generateCodesBtn.addEventListener('click', generateCodes);
-        copyRoomIdBtn.addEventListener('click', () => { navigator.clipboard.writeText(hostId); showToast('Room ID copied!'); });
+        
+        // UPDATED: Sync button now requests current time from host
+        manualSyncBtn.addEventListener('click', requestSyncFromHost);
+        
+        copyRoomIdBtn.addEventListener('click', () => {
+            const textArea = document.createElement('textarea');
+            textArea.value = hostId;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            textArea.style.padding = '0';
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            textArea.style.background = 'transparent';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('Room ID copied!');
+                } else {
+                    alert('Room ID: ' + hostId);
+                }
+            } catch (err) {
+                alert('Room ID: ' + hostId);
+            }
+            
+            document.body.removeChild(textArea);
+        });
+        
         viewersBtn.addEventListener('click', () => viewersModal.classList.remove('hidden'));
         closeModalBtn.addEventListener('click', () => viewersModal.classList.add('hidden'));
         exportChatBtn.addEventListener('click', exportChat);
+        
+        window.addEventListener('beforeunload', () => {
+            if (peer) {
+                peer.destroy();
+            }
+        });
         
         // --- On Load ---
         usernameInputInitial.value = localStorage.getItem('syncwave_username') || '';
