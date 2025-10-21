@@ -9,14 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        #video-iframe { width: 100%; aspect-ratio: 16 / 9; border-radius: 0.5rem; background-color: #000; }
+        #player-container { position: relative; width: 100%; aspect-ratio: 16 / 9; background-color: #000; border-radius: 0.5rem; }
+        #player { width: 100%; height: 100%; }
         .chat-message, .system-message { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; translateY(0); } }
         .lds-ring { display: inline-block; position: relative; width: 20px; height: 20px; }
         .lds-ring div { box-sizing: border-box; display: block; position: absolute; width: 16px; height: 16px; margin: 2px; border: 2px solid #fff; border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: #fff transparent transparent transparent; }
         .lds-ring div:nth-child(1) { animation-delay: -0.45s; } .lds-ring div:nth-child(2) { animation-delay: -0.3s; } .lds-ring div:nth-child(3) { animation-delay: -0.15s; }
         @keyframes lds-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #guest-sync-notice { transition: opacity 0.5s, transform 0.5s; }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white flex items-center justify-center min-h-screen p-4">
@@ -27,6 +27,7 @@
         <div id="initial-view" class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-md mx-auto">
             <h1 class="text-3xl font-extrabold mb-2 text-center">Sync</h1>
             <p class="text-gray-600 dark:text-gray-400 mb-6 text-center">Watch together, stay in sync.</p>
+            <div class="space-y-4"></p>
             <div class="space-y-4">
                 <input type="text" id="username-input-initial" placeholder="Enter Your Name" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <hr class="border-gray-300 dark:border-gray-600">
@@ -54,25 +55,16 @@
                     <div class="flex items-center text-sm">
                         <span class="text-gray-500 dark:text-gray-400 mr-2">Room ID:</span>
                         <span id="room-id-display" class="font-mono text-blue-600 dark:text-blue-400"></span>
-                        <button id="copy-room-id-btn" title="Copy Room ID" class="ml-2 text-gray-500 hover:text-blue-600 p-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg></button>
+                        <button id="copy-room-id-btn" title="Copy Room ID" class="ml-2 text-gray-500 hover:text-blue-600 p-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5-.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg></button>
                     </div>
                 </div>
                 <button id="leave-room-btn" class="mt-3 md:mt-0 w-full md:w-auto bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition">Leave Room</button>
             </header>
             
-            <div id="host-controls" class="hidden mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-3">
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" id="video-url-input" placeholder="Host: Paste any embeddable video URL" class="flex-grow bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+            <div id="host-controls" class="hidden mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md space-y-3">
+                 <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="text" id="video-url-input" placeholder="Host: Paste any YouTube video URL" class="flex-grow bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
                     <button id="load-video-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">Load Video</button>
-                </div>
-                <div class="flex items-center justify-center gap-2 flex-wrap">
-                    <p class="text-sm font-semibold mr-2">Manual Sync Controls:</p>
-                    <button id="play-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md">Play</button>
-                    <button id="pause-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md">Pause</button>
-                    <div class="flex items-center gap-2">
-                        <input type="text" id="seek-time-input" placeholder="Seek (e.g., 1:30)" class="bg-gray-100 dark:bg-gray-700 rounded-md px-2 py-2 w-28">
-                        <button id="seek-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-md">Sync</button>
-                    </div>
                 </div>
                  <div id="host-panel" class="hidden bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                     <h3 class="font-bold text-lg mb-2">Private Room Codes</h3>
@@ -81,10 +73,7 @@
                 </div>
             </div>
             
-            <div id="video-container" class="relative bg-black rounded-lg mb-4 shadow-lg">
-                <iframe id="video-iframe" src="about:blank" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                <div id="guest-sync-notice" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 text-white text-2xl font-bold opacity-0 -translate-y-4 pointer-events-none rounded-lg"></div>
-            </div>
+            <div id="player-container" class="mb-4 shadow-lg"><div id="player"></div></div>
             
             <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
                 <div class="flex justify-between items-center mb-3 border-b border-gray-200 dark:border-gray-700 pb-2">
@@ -111,13 +100,14 @@
 
         <div id="toast" class="fixed bottom-5 right-5 bg-green-500 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 translate-y-3 transition-all duration-300"></div>
     </div>
-
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         // --- State ---
-        let peer, isHost = false, hostId = null, myPeerId = null;
+        let peer, player, isHost = false, hostId = null, myPeerId = null;
         let connections = new Map();
-        let sessionState = { title: "Watch Party", videoUrl: "about:blank", isPrivate: false, accessCodes: [], users: [], chat: [] };
-        let localState = { username: "" };
+        let sessionState = { title: "Watch Party", videoId: null, isPrivate: false, accessCodes: [], users: [], chat: [] };
+        let localState = { username: "", connectionTimeout: null, isPlayerReady: false, lastHostState: -1, syncInProgress: false, hostSeekInterval: null };
         const loadingSpinner = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
 
         // --- DOM Elements ---
@@ -128,29 +118,72 @@
         const sessionTitleInput = $('session-title-input'), roomTypeToggle = $('room-type-toggle'), joinRoomIdInput = $('join-room-id-input');
         const sessionTitleDisplay = $('session-title-display'), roomIdDisplay = $('room-id-display');
         const hostControls = $('host-controls'), videoUrlInput = $('video-url-input'), loadVideoBtn = $('load-video-btn');
-        const playBtn = $('play-btn'), pauseBtn = $('pause-btn'), seekTimeInput = $('seek-time-input'), seekBtn = $('seek-btn');
         const hostPanel = $('host-panel'), generateCodesBtn = $('generate-codes-btn'), accessCodesList = $('access-codes-list');
-        const videoIframe = $('video-iframe'), guestSyncNotice = $('guest-sync-notice');
         const userCount = $('user-count'), chatMessages = $('chat-messages'), chatInput = $('chat-input'), sendChatBtn = $('send-chat-btn');
         const viewersBtn = $('viewers-btn'), exportChatBtn = $('export-chat-btn'), viewersModal = $('viewers-modal'), closeModalBtn = $('close-modal-btn'), modalUserList = $('modal-user-list');
         const toast = $('toast');
         
+        // --- YouTube API ---
+        window.onYouTubeIframeAPIReady = () => { localState.isPlayerReady = true; };
+
+        function createPlayer(videoId) {
+            if (player) { player.destroy(); }
+            player = new YT.Player('player', {
+                height: '100%', width: '100%', videoId: videoId,
+                playerVars: { 'playsinline': 1, 'rel': 0, 'autoplay': 1, 'controls': isHost ? 1 : 0 },
+                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
+            });
+        }
+        
+        function onPlayerReady(event) { if (isHost) event.target.playVideo(); }
+
+        function onPlayerStateChange(event) {
+            if (!isHost || localState.syncInProgress) return;
+            const state = event.data;
+            if (state !== localState.lastHostState) {
+                localState.lastHostState = state;
+                broadcast({ type: 'playback-state', state: state });
+            }
+            // Handle seeking
+            if (state === YT.PlayerState.PLAYING) {
+                if(localState.hostSeekInterval) clearInterval(localState.hostSeekInterval);
+                localState.hostSeekInterval = setInterval(() => {
+                    broadcast({ type: 'playback-time', time: player.getCurrentTime() });
+                }, 1000);
+            } else {
+                 if(localState.hostSeekInterval) clearInterval(localState.hostSeekInterval);
+            }
+        }
+
         // --- P2P Logic ---
         function initializePeerJS(asHost) {
+            if (!localState.isPlayerReady) { setStatus('Player API not ready, please wait...'); return; }
             localState.username = usernameInputInitial.value.trim();
             if (!localState.username) { setStatus('Please enter your name.'); return; }
             localStorage.setItem('syncwave_username', localState.username);
             
             setLoading(true, asHost ? createRoomBtn : joinRoomBtn);
             if (peer) peer.destroy();
+            
+            clearTimeout(localState.connectionTimeout);
+            localState.connectionTimeout = setTimeout(() => {
+                setStatus('Connection timed out. Please try again.');
+                setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
+                if (peer) peer.destroy();
+            }, 8000);
+
             peer = new Peer();
 
             peer.on('open', id => {
+                clearTimeout(localState.connectionTimeout);
                 myPeerId = id;
-                sessionState.users.push({ id: myPeerId, username: localState.username });
+                if (!sessionState.users.some(u => u.id === myPeerId)) {
+                    sessionState.users.push({ id: myPeerId, username: localState.username });
+                }
                 if (asHost) setupHost(); else setupGuest();
             });
             peer.on('error', err => {
+                clearTimeout(localState.connectionTimeout);
                 setStatus(`Error: ${err.message}. Please refresh.`);
                 setLoading(false, asHost ? createRoomBtn : joinRoomBtn);
             });
@@ -161,7 +194,7 @@
             sessionState.title = sessionTitleInput.value.trim() || "My Watch Party";
             sessionState.isPrivate = roomTypeToggle.checked;
             peer.on('connection', conn => handleConnection(conn));
-            showView(false); updateUI();
+            showView(false); createPlayer(null); updateUI();
         }
 
         function setupGuest() {
@@ -173,14 +206,7 @@
 
         function handleConnection(conn) {
             connections.set(conn.peer, conn);
-            
-            conn.on('open', () => {
-                if (isHost) {
-                    if (sessionState.isPrivate) conn.send({ type: 'auth-request' });
-                    else addAndSyncUser(conn, conn.metadata.username);
-                }
-            });
-            
+            conn.on('open', () => { if (isHost) { if (sessionState.isPrivate) conn.send({ type: 'auth-request' }); else addAndSyncUser(conn, conn.metadata.username); } });
             conn.on('data', data => onDataReceived(conn, data));
             conn.on('close', () => onUserDisconnect(conn));
         }
@@ -189,27 +215,21 @@
             switch(data.type) {
                 case 'auth-code':
                     const code = sessionState.accessCodes.find(c => c.code === data.code && !c.usedBy);
-                    if(code) {
-                        code.usedBy = conn.peer;
-                        conn.send({ type: 'auth-success' });
-                        addAndSyncUser(conn, conn.metadata.username);
-                    } else {
-                        conn.send({ type: 'auth-fail' });
-                        setTimeout(() => conn.close(), 500);
-                    }
+                    if(code) { code.usedBy = conn.peer; conn.send({ type: 'auth-success' }); addAndSyncUser(conn, conn.metadata.username); } 
+                    else { conn.send({ type: 'auth-fail' }); setTimeout(() => conn.close(), 500); }
                     break;
                 case 'auth-request':
                     const userCode = prompt("This room is private. Please enter the access code:");
-                    if(userCode) conn.send({type: 'auth-code', code: userCode.trim().toUpperCase()});
-                    else conn.close();
+                    if(userCode) conn.send({type: 'auth-code', code: userCode.trim().toUpperCase()}); else conn.close();
                     break;
                 case 'auth-success': conn.send({type: 'sync-request'}); break;
                 case 'auth-fail': alert('Invalid access code.'); leaveRoom(); break;
                 case 'sync-request': conn.send({ type: 'sync-state', state: sessionState }); break;
-                case 'sync-state': sessionState = data.state; showView(false); updateUI(); break;
+                case 'sync-state': sessionState = data.state; showView(false); createPlayer(sessionState.videoId); updateUI(); break;
                 case 'user-list-update': sessionState.users = data.users; updateUI(); break;
-                case 'video-change': sessionState.videoUrl = data.url; updateUI(); break;
-                case 'manual-sync': showSyncNotice(data.message); break;
+                case 'video-change': sessionState.videoId = data.videoId; createPlayer(data.videoId); break;
+                case 'playback-state': if (!isHost && player) { if (data.state === YT.PlayerState.PLAYING) player.playVideo(); else if (data.state === YT.PlayerState.PAUSED) player.pauseVideo(); } break;
+                case 'playback-time': if (!isHost && player) { const timeDiff = Math.abs(player.getCurrentTime() - data.time); if (timeDiff > 2) { player.seekTo(data.time, true); } } break;
                 case 'chat': sessionState.chat.push(data.message); updateUI(); break;
                 case 'system': sessionState.chat.push(data.message); updateUI(); break;
             }
@@ -226,19 +246,13 @@
 
         function onUserDisconnect(conn) {
             const user = sessionState.users.find(u => u.id === conn.peer);
-            if(user) {
-                addSystemMessage(`${user.username} has left.`);
-                sessionState.users = sessionState.users.filter(u => u.id !== conn.peer);
-                broadcast({ type: 'user-list-update', users: sessionState.users });
-            }
+            if(user) { addSystemMessage(`${user.username} has left.`); sessionState.users = sessionState.users.filter(u => u.id !== conn.peer); broadcast({ type: 'user-list-update', users: sessionState.users }); }
             connections.delete(conn.peer);
             updateUI();
         }
         
         function broadcast(data, excludePeerId = null) {
-            for (const [peerId, conn] of connections.entries()) {
-                if (peerId !== excludePeerId) conn.send(data);
-            }
+            for (const [peerId, conn] of connections.entries()) { if (peerId !== excludePeerId) conn.send(data); }
         }
 
         // --- UI & APP Logic ---
@@ -249,37 +263,19 @@
         }
         
         function updateUI() {
-            // User List / Count
             userCount.textContent = sessionState.users.length;
-            modalUserList.innerHTML = sessionState.users.map(user => `
-                <li class="flex items-center space-x-3 p-2 rounded-md ${user.id === myPeerId ? 'bg-blue-50 dark:bg-blue-900/50' : ''}">
-                    <span class="w-2.5 h-2.5 rounded-full ${user.id === myPeerId || connections.has(user.id) ? 'bg-green-500' : 'bg-gray-400'}"></span>
-                    <span class="font-medium">${user.username} ${user.id === hostId ? '<span class="text-xs font-normal text-yellow-500">(Host)</span>' : ''}</span>
-                </li>`).join('');
-            
-            // Host UI
+            modalUserList.innerHTML = sessionState.users.map(user => `<li class="flex items-center space-x-3 p-2 rounded-md ${user.id === myPeerId ? 'bg-blue-50 dark:bg-blue-900/50' : ''}"><span class="w-2.5 h-2.5 rounded-full ${user.id === myPeerId || connections.has(user.id) ? 'bg-green-500' : 'bg-gray-400'}"></span><span class="font-medium">${user.username} ${user.id === hostId ? '<span class="text-xs font-normal text-yellow-500">(Host)</span>' : ''}</span></li>`).join('');
             hostControls.classList.toggle('hidden', !isHost);
             hostPanel.classList.toggle('hidden', !isHost || !sessionState.isPrivate);
-            if(isHost) {
-                accessCodesList.innerHTML = sessionState.accessCodes.map(c => `<div class="flex justify-between items-center p-1 rounded ${c.usedBy ? 'bg-gray-200 dark:bg-gray-600' : 'bg-gray-100 dark:bg-gray-700'}"><code class="${c.usedBy ? 'line-through text-gray-500' : ''}">${c.code}</code><span class="text-xs text-gray-400">${c.usedBy ? `Used` : 'Unused'}</span></div>`).join('');
-            }
-            
-            // General UI
+            if(isHost) { accessCodesList.innerHTML = sessionState.accessCodes.map(c => `<div class="flex justify-between items-center p-1 rounded ${c.usedBy ? 'bg-gray-200 dark:bg-gray-600' : 'bg-gray-100 dark:bg-gray-700'}"><code class="${c.usedBy ? 'line-through text-gray-500' : ''}">${c.code}</code><span class="text-xs text-gray-400">${c.usedBy ? `Used` : 'Unused'}</span></div>`).join(''); }
             sessionTitleDisplay.textContent = sessionState.title;
             roomIdDisplay.textContent = hostId;
-            if (videoIframe.src !== sessionState.videoUrl) videoIframe.src = sessionState.videoUrl;
 
-            // Chat UI
             chatMessages.innerHTML = '';
             sessionState.chat.forEach(msg => {
                 const div = document.createElement('div');
-                if (msg.isSystem) {
-                    div.className = 'system-message text-center my-2';
-                    div.innerHTML = `<span class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">${msg.text}</span>`;
-                } else {
-                    div.className = 'chat-message mb-3 max-w-lg';
-                    div.innerHTML = `<div class="p-3 rounded-lg inline-block bg-gray-200 dark:bg-gray-700"><p class="font-bold text-sm text-blue-400">${msg.username}</p><p>${msg.text}</p></div><p class="text-xs text-gray-400 mt-1">${msg.timestamp}</p>`;
-                }
+                if (msg.isSystem) { div.className = 'system-message text-center my-2'; div.innerHTML = `<span class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">${msg.text}</span>`; } 
+                else { div.className = 'chat-message mb-3 max-w-lg'; div.innerHTML = `<div class="p-3 rounded-lg inline-block bg-gray-200 dark:bg-gray-700"><p class="font-bold text-sm text-blue-400">${msg.username}</p><p>${msg.text}</p></div><p class="text-xs text-gray-400 mt-1">${msg.timestamp}</p>`; }
                 chatMessages.appendChild(div);
             });
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -287,12 +283,9 @@
 
         function loadVideo() {
             const url = videoUrlInput.value.trim();
-            const embedUrl = convertToEmbedUrl(url);
-            if (embedUrl) {
-                sessionState.videoUrl = embedUrl;
-                broadcast({ type: 'video-change', url: embedUrl });
-                updateUI();
-            } else { alert("Could not create an embed link from that URL. Please use a direct link from YouTube, Vimeo, etc."); }
+            const videoId = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/)?. [1];
+            if (videoId) { sessionState.videoId = videoId; createPlayer(videoId); broadcast({ type: 'video-change', videoId }); } 
+            else { alert('Invalid YouTube URL. Please use a full YouTube video link.'); }
         }
 
         function sendChatMessage() {
@@ -313,26 +306,14 @@
         }
         
         function generateCodes() {
-            for (let i = 0; i < 5; i++) {
-                sessionState.accessCodes.push({ code: Math.random().toString(36).substring(2, 8).toUpperCase(), usedBy: null });
-            }
+            for (let i = 0; i < 5; i++) { sessionState.accessCodes.push({ code: Math.random().toString(36).substring(2, 8).toUpperCase(), usedBy: null }); }
             updateUI();
-        }
-
-        function showSyncNotice(message) {
-            guestSyncNotice.textContent = message;
-            guestSyncNotice.classList.remove('opacity-0', '-translate-y-4');
-            setTimeout(() => {
-                guestSyncNotice.classList.add('opacity-0', '-translate-y-4');
-            }, 2500);
         }
         
         function exportChat() {
-            const chatLog = sessionState.chat.map(msg => {
-                if (msg.isSystem) return `--- ${msg.text} ---`;
-                return `[${msg.timestamp}] ${msg.username}: ${msg.text}`;
-            }).join('\n');
-            const header = `Session: ${sessionState.title}\nVideo: ${sessionState.videoUrl}\nExported: ${new Date().toLocaleString()}\n\n`;
+            if (sessionState.chat.length === 0) { showToast('Chat is empty, nothing to export.'); return; }
+            const chatLog = sessionState.chat.map(msg => { if (msg.isSystem) return `--- ${msg.text} ---`; return `[${msg.timestamp}] ${msg.username}: ${msg.text}`; }).join('\n');
+            const header = `Session: ${sessionState.title}\nVideo: https://youtu.be/${sessionState.videoId}\nExported: ${new Date().toLocaleString()}\n\n`;
             const blob = new Blob([header + chatLog], { type: 'text/plain' });
             const anchor = document.createElement('a');
             anchor.download = `syncwave-chat-${hostId}.txt`;
@@ -342,30 +323,9 @@
         }
         
         function leaveRoom() { window.location.reload(); }
-
-        function convertToEmbedUrl(url) {
-            try {
-                const urlObj = new URL(url);
-                if (urlObj.hostname.includes('youtube.com') && urlObj.searchParams.has('v')) return `https://www.youtube.com/embed/${urlObj.searchParams.get('v')}`;
-                if (urlObj.hostname === 'youtu.be') return `https://www.youtube.com/embed/${urlObj.pathname.slice(1)}`;
-                if (urlObj.hostname.includes('vimeo.com')) { const id = urlObj.pathname.split('/').pop(); if (id) return `https://player.vimeo.com/video/${id}`; }
-                if (url.includes('/embed/') || url.includes('player.vimeo.com')) return url;
-            } catch (e) { /* Fallback for non-standard URLs */ }
-            return url; // Best effort
-        }
-
         function setStatus(text) { statusText.textContent = text; }
-        
-        function setLoading(isLoading, button) {
-            button.disabled = isLoading;
-            button.innerHTML = isLoading ? loadingSpinner + `<span class="ml-2">Connecting...</span>` : (button.id.includes('create') ? 'Create New Room' : 'Join Room');
-        }
-
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.remove('opacity-0', 'translate-y-3');
-            setTimeout(() => toast.classList.add('opacity-0', 'translate-y-3'), 3000);
-        }
+        function setLoading(isLoading, button) { button.disabled = isLoading; button.innerHTML = isLoading ? loadingSpinner + `<span class="ml-2">Connecting...</span>` : (button.id.includes('create') ? 'Create New Room' : 'Join Room'); }
+        function showToast(message) { toast.textContent = message; toast.classList.remove('opacity-0', 'translate-y-3'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-3'), 3000); }
         
         // --- Event Listeners ---
         createRoomBtn.addEventListener('click', () => initializePeerJS(true));
@@ -374,9 +334,6 @@
         loadVideoBtn.addEventListener('click', loadVideo);
         sendChatBtn.addEventListener('click', sendChatMessage);
         chatInput.addEventListener('keypress', e => e.key === 'Enter' && sendChatMessage());
-        playBtn.addEventListener('click', () => broadcast({ type: 'manual-sync', message: 'Host pressed PLAY ▶️' }));
-        pauseBtn.addEventListener('click', () => broadcast({ type: 'manual-sync', message: 'Host pressed PAUSE ⏸️' }));
-        seekBtn.addEventListener('click', () => broadcast({ type: 'manual-sync', message: `Host synced to ${seekTimeInput.value} ⏩` }));
         generateCodesBtn.addEventListener('click', generateCodes);
         copyRoomIdBtn.addEventListener('click', () => { navigator.clipboard.writeText(hostId); showToast('Room ID copied!'); });
         viewersBtn.addEventListener('click', () => viewersModal.classList.remove('hidden'));
