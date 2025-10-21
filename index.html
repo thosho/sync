@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sync</title>
+    <title>SyncWave - YouTube Watch Party</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,9 +25,8 @@
 
         <!-- Initial View -->
         <div id="initial-view" class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-md mx-auto">
-            <h1 class="text-3xl font-extrabold mb-2 text-center">Sync</h1>
-            <p class="text-gray-600 dark:text-gray-400 mb-6 text-center">Watch together, stay in sync.</p>
-            <div class="space-y-4"></p>
+            <h1 class="text-3xl font-extrabold mb-2 text-center">SyncWave</h1>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 text-center">Perfectly synced YouTube watch parties.</p>
             <div class="space-y-4">
                 <input type="text" id="username-input-initial" placeholder="Enter Your Name" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <hr class="border-gray-300 dark:border-gray-600">
@@ -38,13 +37,13 @@
                     <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="room-type-toggle" class="sr-only peer"><div class="w-11 h-6 bg-gray-300 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div></label>
                     <span>Private</span>
                 </div>
-                <button id="create-room-btn" class="w-full bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-md">Create New Room</button>
+                <button id="create-room-btn" class="w-full bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-md transition-opacity opacity-50 cursor-not-allowed" disabled>Create New Room</button>
                 <hr class="border-gray-300 dark:border-gray-600">
                 <p class="font-bold text-lg text-center">Join a Room</p>
                 <input type="text" id="join-room-id-input" placeholder="Enter Host's Room ID" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
-                <button id="join-room-btn" class="w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-md">Join Room</button>
+                <button id="join-room-btn" class="w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-md transition-opacity opacity-50 cursor-not-allowed" disabled>Join Room</button>
             </div>
-            <p id="status-text" class="text-sm text-center text-gray-500 dark:text-gray-400 mt-4 h-5"></p>
+            <p id="status-text" class="text-sm text-center text-gray-500 dark:text-gray-400 mt-4 h-5">Initializing Player...</p>
         </div>
 
         <!-- Main View -->
@@ -107,7 +106,7 @@
         let peer, player, isHost = false, hostId = null, myPeerId = null;
         let connections = new Map();
         let sessionState = { title: "Watch Party", videoId: null, isPrivate: false, accessCodes: [], users: [], chat: [] };
-        let localState = { username: "", connectionTimeout: null, isPlayerReady: false, lastHostState: -1, syncInProgress: false, hostSeekInterval: null };
+        let localState = { username: "", connectionTimeout: null, lastHostState: -1, syncInProgress: false, hostSeekInterval: null };
         const loadingSpinner = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
 
         // --- DOM Elements ---
@@ -124,7 +123,13 @@
         const toast = $('toast');
         
         // --- YouTube API ---
-        window.onYouTubeIframeAPIReady = () => { localState.isPlayerReady = true; };
+        window.onYouTubeIframeAPIReady = () => {
+            setStatus('Player ready. You can now create or join a room.');
+            createRoomBtn.disabled = false;
+            joinRoomBtn.disabled = false;
+            createRoomBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            joinRoomBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        };
 
         function createPlayer(videoId) {
             if (player) { player.destroy(); }
@@ -144,7 +149,6 @@
                 localState.lastHostState = state;
                 broadcast({ type: 'playback-state', state: state });
             }
-            // Handle seeking
             if (state === YT.PlayerState.PLAYING) {
                 if(localState.hostSeekInterval) clearInterval(localState.hostSeekInterval);
                 localState.hostSeekInterval = setInterval(() => {
@@ -157,7 +161,6 @@
 
         // --- P2P Logic ---
         function initializePeerJS(asHost) {
-            if (!localState.isPlayerReady) { setStatus('Player API not ready, please wait...'); return; }
             localState.username = usernameInputInitial.value.trim();
             if (!localState.username) { setStatus('Please enter your name.'); return; }
             localStorage.setItem('syncwave_username', localState.username);
@@ -229,7 +232,7 @@
                 case 'user-list-update': sessionState.users = data.users; updateUI(); break;
                 case 'video-change': sessionState.videoId = data.videoId; createPlayer(data.videoId); break;
                 case 'playback-state': if (!isHost && player) { if (data.state === YT.PlayerState.PLAYING) player.playVideo(); else if (data.state === YT.PlayerState.PAUSED) player.pauseVideo(); } break;
-                case 'playback-time': if (!isHost && player) { const timeDiff = Math.abs(player.getCurrentTime() - data.time); if (timeDiff > 2) { player.seekTo(data.time, true); } } break;
+                case 'playback-time': if (!isHost && player) { const timeDiff = Math.abs(player.getCurrentTime() - data.time); if (timeDiff > 2.5) { player.seekTo(data.time, true); } } break;
                 case 'chat': sessionState.chat.push(data.message); updateUI(); break;
                 case 'system': sessionState.chat.push(data.message); updateUI(); break;
             }
