@@ -7,1002 +7,1002 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-	<style>
-	    @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
-    
-	    body { font-family: 'Inter', sans-serif; }
-	    #player { width: 100%; aspect-ratio: 16 / 9; border-radius: 0.5rem; background-color: #000; }
-	    .chat-message, .system-message { animation: fadeIn 0.3s ease-in-out; }
-	    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; translateY(0); } }
-	    .lds-ring { display: inline-block; position: relative; width: 20px; height: 20px; }
-	    .lds-ring div { box-sizing: border-box; display: block; position: absolute; width: 16px; height: 16px; margin: 2px; border: 2px solid #fff; border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: #fff transparent transparent transparent; }
-	    .lds-ring div:nth-child(1) { animation-delay: -0.45s; } .lds-ring div:nth-child(2) { animation-delay: -0.3s; } .lds-ring div:nth-child(3) { animation-delay: -0.15s; }
-	    @keyframes lds-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-	    #guest-sync-notice { transition: opacity 0.5s, transform 0.5s; }
-	    .mode-card { transition: all 0.3s ease; cursor: pointer; }
-	    .mode-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-    
-	    .brand-title {
-	        font-family: 'Audiowide', cursive;
-	        letter-spacing: 0.05em;
-	        color: #2563eb;
-	    }
-    
-	    .brand-title-large {
-	        font-family: 'Audiowide', cursive;
-	        letter-spacing: 0.1em;
-	        font-size: 3.5rem;
-	        color: #ffffff;
-	        text-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.3);
-	    }
-    
-	    .dark .brand-title {
-	        color: #60a5fa;
-	    }
-    
-	    .dark .brand-title-large {
-	        color: #ffffff;
-	        text-shadow: 0 0 20px rgba(96, 165, 250, 0.6), 0 0 40px rgba(96, 165, 250, 0.4);
-	    }
-	</style>
-	
-	
-    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
+        body { font-family: 'Inter', sans-serif; }
+        #player { width: 100%; aspect-ratio: 16 / 9; border-radius: 0.5rem; background-color: #000; }
+        .chat-message, .system-message { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; translateY(0); } }
+        .lds-ring { display: inline-block; position: relative; width: 20px; height: 20px; }
+        .lds-ring div { box-sizing: border-box; display: block; position: absolute; width: 16px; height: 16px; margin: 2px; border: 2px solid #fff; border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: #fff transparent transparent transparent; }
+        .lds-ring div:nth-child(1) { animation-delay: -0.45s; } .lds-ring div:nth-child(2) { animation-delay: -0.3s; } .lds-ring div:nth-child(3) { animation-delay: -0.15s; }
+        @keyframes lds-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #guest-sync-notice { transition: opacity 0.5s, transform 0.5s; }
+        .mode-card { transition: all 0.3s ease; cursor: pointer; }
+        .mode-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+
+        .brand-title {
+            font-family: 'Audiowide', cursive;
+            letter-spacing: 0.05em;
+            color: #2563eb;
+        }
+
+        .brand-title-large {
+            font-family: 'Audiowide', cursive;
+            letter-spacing: 0.1em;
+            font-size: 3.5rem;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.3);
+        }
+
+        .dark .brand-title {
+            color: #60a5fa;
+        }
+
+        .dark .brand-title-large {
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(96, 165, 250, 0.6), 0 0 40px rgba(96, 165, 250, 0.4);
+        }
+    </style>
+
+
+
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white flex items-center justify-center min-h-screen p-4">
 
-    <div id="app-container" class="w-full max-w-4xl mx-auto">
+<div id="app-container" class="w-full max-w-4xl mx-auto">
 
-        <div id="initial-view" class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-2xl mx-auto">
-		  <h1 class="brand-title-large font-extrabold mb-2 text-center">SYNC</h1>
-		  
-            <p class="text-gray-600 dark:text-gray-400 mb-6 text-center">Watch together, stay in sync.</p>
-            
-            <!-- Mode Selection -->
-            <div id="mode-selection" class="space-y-4 mb-6">
-             
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Normal Mode -->
-                    <div id="normal-mode-card" class="mode-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-lg">
-                        <div class="text-center">
-                            <svg class="w-12 h-12 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
-                            <h3 class="text-xl font-bold mb-2">Watch Party</h3>
-                            <p class="text-sm opacity-90">Host controls, multiple viewers</p>
-                        </div>
-                    </div>
-                    
-                    <!-- 2 Way Sync Mode -->
-                    <div id="twoway-mode-card" class="mode-card bg-gradient-to-br from-pink-500 to-red-500 text-white p-6 rounded-lg">
-                        <div class="text-center">
-                            <svg class="w-12 h-12 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
-                            <h3 class="text-xl font-bold mb-2">2 Way Sync</h3>
-                            <p class="text-sm opacity-90">Both control, perfect for couples</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Normal Mode Form -->
-            <div id="normal-mode-form" class="hidden space-y-4">
-                <button id="back-to-mode-btn" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">← Back to modes</button>
-                <input type="text" id="username-input-initial" placeholder="Enter Your Name" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <hr class="border-gray-300 dark:border-gray-600">
-                <p class="font-bold text-lg text-center">Create a Room</p>
-                <input type="text" id="session-title-input" placeholder="Title for your Session" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
-                <div class="flex items-center justify-center space-x-4 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <span>Public</span>
-                    <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="room-type-toggle" class="sr-only peer"><div class="w-11 h-6 bg-gray-300 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div></label>
-                    <span>Private</span>
-                </div>
-                <button id="create-room-btn" class="w-full bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-md">Create New Room</button>
-                <hr class="border-gray-300 dark:border-gray-600">
-                <p class="font-bold text-lg text-center">Join a Room</p>
-                <input type="text" id="join-room-id-input" placeholder="Enter Host's Room ID" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
-                <button id="join-room-btn" class="w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-md">Join Room</button>
-            </div>
-            
-            <!-- 2 Way Sync Form -->
-            <div id="twoway-mode-form" class="hidden space-y-4">
-                <button id="back-to-mode-btn-2" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">← Back to modes</button>
-                <input type="text" id="username-input-twoway" placeholder="Enter Your Name" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500">
-                <hr class="border-gray-300 dark:border-gray-600">
-                <p class="font-bold text-lg text-center text-pink-600 dark:text-pink-400">💕 2 Way Sync</p>
-                <input type="text" id="session-title-twoway" placeholder="Session Title (e.g., Movie Night)" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
-                <button id="create-twoway-btn" class="w-full bg-pink-600 hover:bg-pink-700 font-bold py-2 px-4 rounded-md text-white">Create 2-Way Room</button>
-                <hr class="border-gray-300 dark:border-gray-600">
-                <input type="text" id="join-twoway-id-input" placeholder="Enter Partner's Room ID" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
-                <button id="join-twoway-btn" class="w-full bg-red-600 hover:bg-red-700 font-bold py-2 px-4 rounded-md text-white">Join Partner</button>
-            </div>
-            
-            <p id="status-text" class="text-sm text-center text-red-500 dark:text-red-400 mt-4 h-5"></p>
-            
-            <p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-6">Designed by @Thosho Tech</p>
-        </div>
+    <div id="initial-view" class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-2xl mx-auto">
+        <h1 class="brand-title-large font-extrabold mb-2 text-center">SynK</h1>
 
-        <div id="main-view" class="hidden">
-            <header class="mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 w-full md:w-auto">
-					<h1 class="brand-title text-2xl font-extrabold flex-shrink-0">SyncWave</h1>
-                    
-                    
-                    <div class="border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-gray-700 pt-2 sm:pt-0 sm:pl-6">
-                        <div class="flex items-center gap-2">
-                            <h2 id="session-title-display" class="text-xl font-bold"></h2>
-                            <span id="twoway-badge" class="hidden text-xs bg-pink-500 text-white px-2 py-1 rounded-full">💕 2-Way</span>
-                        </div>
-                        <div class="flex items-center text-sm">
-                            <span class="text-gray-500 dark:text-gray-400 mr-2">Room ID:</span>
-                            <span id="room-id-display" class="font-mono text-blue-600 dark:text-blue-400"></span>
-                            <button id="copy-room-id-btn" title="Copy Room ID" class="ml-2 text-gray-500 hover:text-blue-600 p-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5-.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg></button>
-                        </div>
+        <p class="text-gray-600 dark:text-gray-400 mb-6 text-center">Watch together, stay in sync.</p>
+
+        <!-- Mode Selection -->
+        <div id="mode-selection" class="space-y-4 mb-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Normal Mode -->
+                <div id="normal-mode-card" class="mode-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-lg">
+                    <div class="text-center">
+                        <svg class="w-12 h-12 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
+                        <h3 class="text-xl font-bold mb-2">Watch Party</h3>
+                        <p class="text-sm opacity-90">Host controls, multiple viewers</p>
                     </div>
                 </div>
-                
-                <button id="leave-room-btn" class="w-full md:w-auto bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition flex-shrink-0">Leave Room</button>
-            </header>
-            
-            <div id="host-controls" class="hidden mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-3">
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" id="video-url-input" placeholder="Paste YouTube video URL or ID" class="flex-grow bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
-                    <button id="load-video-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">Load Video</button>
-                </div>
-                 <div id="host-panel" class="hidden bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-                    <h3 class="font-bold text-lg mb-2">Private Room Codes</h3>
-                    <button id="generate-codes-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md mb-2">Generate 5 Access Codes</button>
-                    <div id="access-codes-list" class="text-sm space-y-1"></div>
-                </div>
-            </div>
-            
-            <div id="video-container" class="relative bg-black rounded-lg mb-4 shadow-lg">
-                <div id="player"></div>
-                <div id="guest-sync-notice" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 text-white text-2xl font-bold opacity-0 -translate-y-4 pointer-events-none rounded-lg"></div>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
-                <div class="flex justify-between items-center mb-3 border-b border-gray-200 dark:border-gray-700 pb-2 flex-wrap gap-2">
-                    <div class="flex items-center gap-4 flex-wrap">
-                        <h2 class="text-xl font-semibold">Live Discussion</h2>
-                        <div class="flex items-center gap-2">
-                            <div id="sync-time-container" class="text-sm font-mono p-1 bg-gray-100 dark:bg-gray-700 rounded">
-                                <span id="sync-time-label">Time:</span>
-                                <span id="host-time-display" class="font-bold">--:--</span>
-                            </div>
-                            <button id="manual-sync-btn" class="hidden text-xs bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-md">Sync</button>
-                        </div>
+
+                <!-- 2 Way Sync Mode -->
+                <div id="twoway-mode-card" class="mode-card bg-gradient-to-br from-pink-500 to-red-500 text-white p-6 rounded-lg">
+                    <div class="text-center">
+                        <svg class="w-12 h-12 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                        <h3 class="text-xl font-bold mb-2">2 Way Sync</h3>
+                        <p class="text-sm opacity-90">Both control, perfect for couples</p>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <button id="viewers-btn" class="text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium py-1 px-3 rounded-md">Viewers (<span id="user-count">0</span>)</button>
-                        <button id="export-chat-btn" class="text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium py-1 px-3 rounded-md">Copy Chat</button>
-                    </div>
-                </div>
-                <div id="chat-messages" class="h-64 overflow-y-auto mb-3 pr-2"></div>
-                <div class="flex gap-2">
-                    <input type="text" id="chat-input" placeholder="Say something..." class="flex-grow bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
-                    <button id="send-chat-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded-md"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/></svg></button>
                 </div>
             </div>
         </div>
-        
-        <div id="viewers-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm">
-                <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Who's Watching</h3><button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button></div>
-                <ul id="modal-user-list" class="space-y-3"></ul>
+
+        <!-- Normal Mode Form -->
+        <div id="normal-mode-form" class="hidden space-y-4">
+            <button id="back-to-mode-btn" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">← Back to modes</button>
+            <input type="text" id="username-input-initial" placeholder="Enter Your Name" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <hr class="border-gray-300 dark:border-gray-600">
+            <p class="font-bold text-lg text-center">Create a Room</p>
+            <input type="text" id="session-title-input" placeholder="Title for your Session" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+            <div class="flex items-center justify-center space-x-4 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <span>Public</span>
+                <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="room-type-toggle" class="sr-only peer"><div class="w-11 h-6 bg-gray-300 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div></label>
+                <span>Private</span>
             </div>
+            <button id="create-room-btn" class="w-full bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-md">Create New Room</button>
+            <hr class="border-gray-300 dark:border-gray-600">
+            <p class="font-bold text-lg text-center">Join a Room</p>
+            <input type="text" id="join-room-id-input" placeholder="Enter Host's Room ID" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+            <button id="join-room-btn" class="w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-md">Join Room</button>
         </div>
 
-        <div id="toast" class="fixed bottom-5 right-5 bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 translate-y-3 transition-all duration-300"></div>
+        <!-- 2 Way Sync Form -->
+        <div id="twoway-mode-form" class="hidden space-y-4">
+            <button id="back-to-mode-btn-2" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">← Back to modes</button>
+            <input type="text" id="username-input-twoway" placeholder="Enter Your Name" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500">
+            <hr class="border-gray-300 dark:border-gray-600">
+            <p class="font-bold text-lg text-center text-pink-600 dark:text-pink-400">💕 2 Way Sync</p>
+            <input type="text" id="session-title-twoway" placeholder="Session Title (e.g., Movie Night)" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+            <button id="create-twoway-btn" class="w-full bg-pink-600 hover:bg-pink-700 font-bold py-2 px-4 rounded-md text-white">Create 2-Way Room</button>
+            <hr class="border-gray-300 dark:border-gray-600">
+            <input type="text" id="join-twoway-id-input" placeholder="Enter Partner's Room ID" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+            <button id="join-twoway-btn" class="w-full bg-red-600 hover:bg-red-700 font-bold py-2 px-4 rounded-md text-white">Join Partner</button>
+        </div>
+
+        <p id="status-text" class="text-sm text-center text-red-500 dark:text-red-400 mt-4 h-5"></p>
+
+        <p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-6">Designed by @Thosho Tech</p>
     </div>
 
-    <script>
-        // --- State ---
-        let peer, isHost = false, hostId = null, myPeerId = null;
-        let connections = new Map();
-        let sessionState = { title: "Watch Party", videoId: null, hostTimestamp: 0, isPlaying: false, isPrivate: false, isTwoWay: false, accessCodes: [], users: [], chat: [] };
-        let localState = { username: "", connectionTimeout: null, ignoreNextStateChange: false, retryCount: 0, hostConnection: null, lastBroadcastTime: 0, broadcastCooldown: 1000 };
-        const loadingSpinner = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
-        
-        let player, ytReady = false, playerReady = false;
-        let prevTime = 0, prevState = -1, syncCheckInterval = null, guestTimeUpdateInterval = null;
+    <div id="main-view" class="hidden">
+        <header class="mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 w-full md:w-auto">
+                <h1 class="brand-title text-2xl font-extrabold flex-shrink-0">SynK</h1>
 
-        // --- DOM Elements ---
-        const $ = (id) => document.getElementById(id);
-        const initialView = $('initial-view'), mainView = $('main-view'), statusText = $('status-text');
-        const modeSelection = $('mode-selection'), normalModeForm = $('normal-mode-form'), twowayModeForm = $('twoway-mode-form');
-        const normalModeCard = $('normal-mode-card'), twowayModeCard = $('twoway-mode-card');
-        const backToModeBtn = $('back-to-mode-btn'), backToModeBtn2 = $('back-to-mode-btn-2');
-        const usernameInputInitial = $('username-input-initial'), usernameInputTwoway = $('username-input-twoway');
-        const createRoomBtn = $('create-room-btn'), joinRoomBtn = $('join-room-btn'), leaveRoomBtn = $('leave-room-btn');
-        const createTwowayBtn = $('create-twoway-btn'), joinTwowayBtn = $('join-twoway-btn');
-        const sessionTitleInput = $('session-title-input'), sessionTitleTwoway = $('session-title-twoway');
-        const roomTypeToggle = $('room-type-toggle'), joinRoomIdInput = $('join-room-id-input'), joinTwowayIdInput = $('join-twoway-id-input');
-        const sessionTitleDisplay = $('session-title-display'), roomIdDisplay = $('room-id-display'), twowayBadge = $('twoway-badge');
-        const hostControls = $('host-controls'), videoUrlInput = $('video-url-input'), loadVideoBtn = $('load-video-btn');
-        const hostPanel = $('host-panel'), generateCodesBtn = $('generate-codes-btn'), accessCodesList = $('access-codes-list');
-        const guestSyncNotice = $('guest-sync-notice');
-        const userCount = $('user-count'), chatMessages = $('chat-messages'), chatInput = $('chat-input'), sendChatBtn = $('send-chat-btn');
-        const viewersBtn = $('viewers-btn'), exportChatBtn = $('export-chat-btn'), viewersModal = $('viewers-modal'), closeModalBtn = $('close-modal-btn'), modalUserList = $('modal-user-list');
-        const hostTimeDisplay = $('host-time-display'), syncTimeLabel = $('sync-time-label');
-        const manualSyncBtn = $('manual-sync-btn');
-        const toast = $('toast');
-        const copyRoomIdBtn = $('copy-room-id-btn');
-        
-        // --- Mode Selection ---
-        normalModeCard.addEventListener('click', () => {
-            modeSelection.classList.add('hidden');
-            normalModeForm.classList.remove('hidden');
-        });
-        
-        twowayModeCard.addEventListener('click', () => {
-            modeSelection.classList.add('hidden');
-            twowayModeForm.classList.remove('hidden');
-        });
-        
-        backToModeBtn.addEventListener('click', () => {
-            normalModeForm.classList.add('hidden');
-            modeSelection.classList.remove('hidden');
-            setStatus('');
-        });
-        
-        backToModeBtn2.addEventListener('click', () => {
-            twowayModeForm.classList.add('hidden');
-            modeSelection.classList.remove('hidden');
-            setStatus('');
-        });
-        
-        // --- YouTube IFrame API ---
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        window.onYouTubeIframeAPIReady = function() {
-            ytReady = true;
-        };
+                <div class="border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-gray-700 pt-2 sm:pt-0 sm:pl-6">
+                    <div class="flex items-center gap-2">
+                        <h2 id="session-title-display" class="text-xl font-bold"></h2>
+                        <span id="twoway-badge" class="hidden text-xs bg-pink-500 text-white px-2 py-1 rounded-full">💕 2-Way</span>
+                    </div>
+                    <div class="flex items-center text-sm">
+                        <span class="text-gray-500 dark:text-gray-400 mr-2">Room ID:</span>
+                        <span id="room-id-display" class="font-mono text-blue-600 dark:text-blue-400"></span>
+                        <button id="copy-room-id-btn" title="Copy Room ID" class="ml-2 text-gray-500 hover:text-blue-600 p-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5-.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg></button>
+                    </div>
+                </div>
+            </div>
 
-        function createPlayer(videoId) {
-            if (!ytReady) {
-                setTimeout(() => createPlayer(videoId), 100);
-                return;
-            }
-            
-            if (player) player.destroy();
-            
-            const hasControls = sessionState.isTwoWay || isHost;
-            
-            player = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
-                videoId: videoId,
-                playerVars: {
-                    'playsinline': 1,
-                    'controls': hasControls ? 1 : 0,
-                    'disablekb': hasControls ? 0 : 1,
-                    'modestbranding': 1,
-                    'rel': 0
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
-            });
+            <button id="leave-room-btn" class="w-full md:w-auto bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition flex-shrink-0">Leave Room</button>
+        </header>
+
+        <div id="host-controls" class="hidden mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-3">
+            <div class="flex flex-col sm:flex-row gap-2">
+                <input type="text" id="video-url-input" placeholder="Paste YouTube video URL or ID" class="flex-grow bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+                <button id="load-video-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">Load Video</button>
+            </div>
+            <div id="host-panel" class="hidden bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                <h3 class="font-bold text-lg mb-2">Private Room Codes</h3>
+                <button id="generate-codes-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md mb-2">Generate 5 Access Codes</button>
+                <div id="access-codes-list" class="text-sm space-y-1"></div>
+            </div>
+        </div>
+
+        <div id="video-container" class="relative bg-black rounded-lg mb-4 shadow-lg">
+            <div id="player"></div>
+            <div id="guest-sync-notice" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 text-white text-2xl font-bold opacity-0 -translate-y-4 pointer-events-none rounded-lg"></div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+            <div class="flex justify-between items-center mb-3 border-b border-gray-200 dark:border-gray-700 pb-2 flex-wrap gap-2">
+                <div class="flex items-center gap-4 flex-wrap">
+                    <h2 class="text-xl font-semibold">Live Discussion</h2>
+                    <div class="flex items-center gap-2">
+                        <div id="sync-time-container" class="text-sm font-mono p-1 bg-gray-100 dark:bg-gray-700 rounded">
+                            <span id="sync-time-label">Time:</span>
+                            <span id="host-time-display" class="font-bold">--:--</span>
+                        </div>
+                        <button id="manual-sync-btn" class="hidden text-xs bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-md">Sync</button>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="viewers-btn" class="text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium py-1 px-3 rounded-md">Viewers (<span id="user-count">0</span>)</button>
+                    <button id="export-chat-btn" class="text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium py-1 px-3 rounded-md">Copy Chat</button>
+                </div>
+            </div>
+            <div id="chat-messages" class="h-64 overflow-y-auto mb-3 pr-2"></div>
+            <div class="flex gap-2">
+                <input type="text" id="chat-input" placeholder="Say something..." class="flex-grow bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2">
+                <button id="send-chat-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded-md"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/></svg></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewers-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm">
+            <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Who's Watching</h3><button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button></div>
+            <ul id="modal-user-list" class="space-y-3"></ul>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-5 right-5 bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 translate-y-3 transition-all duration-300"></div>
+</div>
+
+<script>
+    // --- State ---
+    let peer, isHost = false, hostId = null, myPeerId = null;
+    let connections = new Map();
+    let sessionState = { title: "Watch Party", videoId: null, hostTimestamp: 0, isPlaying: false, isPrivate: false, isTwoWay: false, accessCodes: [], users: [], chat: [] };
+    let localState = { username: "", connectionTimeout: null, ignoreNextStateChange: false, retryCount: 0, hostConnection: null, lastBroadcastTime: 0, broadcastCooldown: 1000 };
+    const loadingSpinner = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
+
+    let player, ytReady = false, playerReady = false;
+    let prevTime = 0, prevState = -1, syncCheckInterval = null, guestTimeUpdateInterval = null;
+
+    // --- DOM Elements ---
+    const $ = (id) => document.getElementById(id);
+    const initialView = $('initial-view'), mainView = $('main-view'), statusText = $('status-text');
+    const modeSelection = $('mode-selection'), normalModeForm = $('normal-mode-form'), twowayModeForm = $('twoway-mode-form');
+    const normalModeCard = $('normal-mode-card'), twowayModeCard = $('twoway-mode-card');
+    const backToModeBtn = $('back-to-mode-btn'), backToModeBtn2 = $('back-to-mode-btn-2');
+    const usernameInputInitial = $('username-input-initial'), usernameInputTwoway = $('username-input-twoway');
+    const createRoomBtn = $('create-room-btn'), joinRoomBtn = $('join-room-btn'), leaveRoomBtn = $('leave-room-btn');
+    const createTwowayBtn = $('create-twoway-btn'), joinTwowayBtn = $('join-twoway-btn');
+    const sessionTitleInput = $('session-title-input'), sessionTitleTwoway = $('session-title-twoway');
+    const roomTypeToggle = $('room-type-toggle'), joinRoomIdInput = $('join-room-id-input'), joinTwowayIdInput = $('join-twoway-id-input');
+    const sessionTitleDisplay = $('session-title-display'), roomIdDisplay = $('room-id-display'), twowayBadge = $('twoway-badge');
+    const hostControls = $('host-controls'), videoUrlInput = $('video-url-input'), loadVideoBtn = $('load-video-btn');
+    const hostPanel = $('host-panel'), generateCodesBtn = $('generate-codes-btn'), accessCodesList = $('access-codes-list');
+    const guestSyncNotice = $('guest-sync-notice');
+    const userCount = $('user-count'), chatMessages = $('chat-messages'), chatInput = $('chat-input'), sendChatBtn = $('send-chat-btn');
+    const viewersBtn = $('viewers-btn'), exportChatBtn = $('export-chat-btn'), viewersModal = $('viewers-modal'), closeModalBtn = $('close-modal-btn'), modalUserList = $('modal-user-list');
+    const hostTimeDisplay = $('host-time-display'), syncTimeLabel = $('sync-time-label');
+    const manualSyncBtn = $('manual-sync-btn');
+    const toast = $('toast');
+    const copyRoomIdBtn = $('copy-room-id-btn');
+
+    // --- Mode Selection ---
+    normalModeCard.addEventListener('click', () => {
+        modeSelection.classList.add('hidden');
+        normalModeForm.classList.remove('hidden');
+    });
+
+    twowayModeCard.addEventListener('click', () => {
+        modeSelection.classList.add('hidden');
+        twowayModeForm.classList.remove('hidden');
+    });
+
+    backToModeBtn.addEventListener('click', () => {
+        normalModeForm.classList.add('hidden');
+        modeSelection.classList.remove('hidden');
+        setStatus('');
+    });
+
+    backToModeBtn2.addEventListener('click', () => {
+        twowayModeForm.classList.add('hidden');
+        modeSelection.classList.remove('hidden');
+        setStatus('');
+    });
+
+    // --- YouTube IFrame API ---
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = function() {
+        ytReady = true;
+    };
+
+    function createPlayer(videoId) {
+        if (!ytReady) {
+            setTimeout(() => createPlayer(videoId), 100);
+            return;
         }
 
-        function onPlayerReady(event) {
-            playerReady = true;
-            
-            if (sessionState.isTwoWay || isHost) {
-                startSyncCheck();
-            } else {
-                syncToHost();
-                startGuestTimeUpdate();
+        if (player) player.destroy();
+
+        const hasControls = sessionState.isTwoWay || isHost;
+
+        player = new YT.Player('player', {
+            height: '100%',
+            width: '100%',
+            videoId: videoId,
+            playerVars: {
+                'playsinline': 1,
+                'controls': hasControls ? 1 : 0,
+                'disablekb': hasControls ? 0 : 1,
+                'modestbranding': 1,
+                'rel': 0
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
             }
+        });
+    }
+
+    function onPlayerReady(event) {
+        playerReady = true;
+
+        if (sessionState.isTwoWay || isHost) {
+            startSyncCheck();
+        } else {
+            syncToHost();
+            startGuestTimeUpdate();
+        }
+    }
+
+    function onPlayerStateChange(event) {
+        // FIXED: Prevent broadcast loop
+        if (localState.ignoreNextStateChange) {
+            localState.ignoreNextStateChange = false;
+            return;
         }
 
-        function onPlayerStateChange(event) {
-            // FIXED: Prevent broadcast loop
-            if (localState.ignoreNextStateChange) {
-                localState.ignoreNextStateChange = false;
-                return;
+        const state = event.data;
+
+        // FIXED: Only broadcast if state actually changed AND cooldown period passed
+        if (state === prevState) return;
+
+        const now = Date.now();
+        if (now - localState.lastBroadcastTime < localState.broadcastCooldown) {
+            return; // Skip if within cooldown period
+        }
+
+        prevState = state;
+        localState.lastBroadcastTime = now;
+
+        // In 2-way mode or host mode, broadcast changes
+        if (sessionState.isTwoWay || isHost) {
+            const currentTime = player.getCurrentTime();
+
+            if (state === YT.PlayerState.PLAYING) {
+                sessionState.isPlaying = true;
+                broadcast({
+                    type: 'player-control',
+                    action: 'play',
+                    time: currentTime,
+                    senderId: myPeerId  // FIXED: Track who sent it
+                });
+                addSystemMessage(`${localState.username} started playing`);
+            } else if (state === YT.PlayerState.PAUSED) {
+                sessionState.isPlaying = false;
+                broadcast({
+                    type: 'player-control',
+                    action: 'pause',
+                    time: currentTime,
+                    senderId: myPeerId  // FIXED: Track who sent it
+                });
+                addSystemMessage(`${localState.username} paused`);
             }
-            
-            const state = event.data;
-            
-            // FIXED: Only broadcast if state actually changed AND cooldown period passed
-            if (state === prevState) return;
-            
-            const now = Date.now();
-            if (now - localState.lastBroadcastTime < localState.broadcastCooldown) {
-                return; // Skip if within cooldown period
-            }
-            
-            prevState = state;
-            localState.lastBroadcastTime = now;
-            
-            // In 2-way mode or host mode, broadcast changes
-            if (sessionState.isTwoWay || isHost) {
-                const currentTime = player.getCurrentTime();
-                
-                if (state === YT.PlayerState.PLAYING) {
-                    sessionState.isPlaying = true;
-                    broadcast({ 
-                        type: 'player-control', 
-                        action: 'play',
+        }
+    }
+
+    function startSyncCheck() {
+        if (syncCheckInterval) clearInterval(syncCheckInterval);
+
+        syncCheckInterval = setInterval(() => {
+            if (!player) return;
+
+            const currentTime = player.getCurrentTime();
+
+            // FIXED: Only broadcast seek if significant jump
+            if (Math.abs(currentTime - prevTime) > 2) {
+                const now = Date.now();
+                if (now - localState.lastBroadcastTime >= localState.broadcastCooldown) {
+                    sessionState.hostTimestamp = currentTime;
+                    broadcast({
+                        type: 'player-control',
+                        action: 'seek',
                         time: currentTime,
                         senderId: myPeerId  // FIXED: Track who sent it
                     });
-                    addSystemMessage(`${localState.username} started playing`);
-                } else if (state === YT.PlayerState.PAUSED) {
-                    sessionState.isPlaying = false;
-                    broadcast({ 
-                        type: 'player-control', 
-                        action: 'pause',
-                        time: currentTime,
-                        senderId: myPeerId  // FIXED: Track who sent it
-                    });
-                    addSystemMessage(`${localState.username} paused`);
-                }
-            }
-        }
-
-        function startSyncCheck() {
-            if (syncCheckInterval) clearInterval(syncCheckInterval);
-            
-            syncCheckInterval = setInterval(() => {
-                if (!player) return;
-                
-                const currentTime = player.getCurrentTime();
-                
-                // FIXED: Only broadcast seek if significant jump
-                if (Math.abs(currentTime - prevTime) > 2) {
-                    const now = Date.now();
-                    if (now - localState.lastBroadcastTime >= localState.broadcastCooldown) {
-                        sessionState.hostTimestamp = currentTime;
-                        broadcast({ 
-                            type: 'player-control', 
-                            action: 'seek',
-                            time: currentTime,
-                            senderId: myPeerId  // FIXED: Track who sent it
-                        });
-                        if (sessionState.isTwoWay || isHost) {
-                            addSystemMessage(`${localState.username} seeked to ${formatTime(currentTime)}`);
-                        }
-                        localState.lastBroadcastTime = now;
+                    if (sessionState.isTwoWay || isHost) {
+                        addSystemMessage(`${localState.username} seeked to ${formatTime(currentTime)}`);
                     }
+                    localState.lastBroadcastTime = now;
                 }
-                
-                prevTime = currentTime;
-                sessionState.hostTimestamp = currentTime;
-                hostTimeDisplay.textContent = formatTime(currentTime);
-            }, 1000); // FIXED: Increased to 1 second
-        }
-        
-        function startGuestTimeUpdate() {
-            if (guestTimeUpdateInterval) clearInterval(guestTimeUpdateInterval);
-            
-            guestTimeUpdateInterval = setInterval(() => {
-                if (isHost || sessionState.isTwoWay || !localState.hostConnection || !localState.hostConnection.open) return;
-                
-                try {
-                    localState.hostConnection.send({ type: 'request-current-time' });
-                } catch(e) {}
-            }, 2000);
-        }
-        
-        function requestManualSync() {
-            if (sessionState.isTwoWay || isHost || !localState.hostConnection || !localState.hostConnection.open) {
-                showToast('Not connected to host');
-                return;
             }
-            
+
+            prevTime = currentTime;
+            sessionState.hostTimestamp = currentTime;
+            hostTimeDisplay.textContent = formatTime(currentTime);
+        }, 1000); // FIXED: Increased to 1 second
+    }
+
+    function startGuestTimeUpdate() {
+        if (guestTimeUpdateInterval) clearInterval(guestTimeUpdateInterval);
+
+        guestTimeUpdateInterval = setInterval(() => {
+            if (isHost || sessionState.isTwoWay || !localState.hostConnection || !localState.hostConnection.open) return;
+
             try {
-                localState.hostConnection.send({ type: 'request-sync' });
-                showToast('Syncing...');
-            } catch(e) {
-                showToast('Failed to sync. Host may be offline.');
-            }
+                localState.hostConnection.send({ type: 'request-current-time' });
+            } catch(e) {}
+        }, 2000);
+    }
+
+    function requestManualSync() {
+        if (sessionState.isTwoWay || isHost || !localState.hostConnection || !localState.hostConnection.open) {
+            showToast('Not connected to host');
+            return;
         }
-        
-        function syncToHost(timestamp = null, isPlaying = null) {
-            if (!player || !playerReady) return;
-            if (sessionState.isTwoWay || isHost) return;
-            
-            const targetTime = timestamp !== null ? timestamp : sessionState.hostTimestamp;
-            const shouldPlay = isPlaying !== null ? isPlaying : sessionState.isPlaying;
-            
-            localState.ignoreNextStateChange = true;
-            
-            player.seekTo(targetTime, true);
-            
-            if (shouldPlay) {
-                player.playVideo();
-                showSyncNotice(`🔄 Synced to ${formatTime(targetTime)}`);
+
+        try {
+            localState.hostConnection.send({ type: 'request-sync' });
+            showToast('Syncing...');
+        } catch(e) {
+            showToast('Failed to sync. Host may be offline.');
+        }
+    }
+
+    function syncToHost(timestamp = null, isPlaying = null) {
+        if (!player || !playerReady) return;
+        if (sessionState.isTwoWay || isHost) return;
+
+        const targetTime = timestamp !== null ? timestamp : sessionState.hostTimestamp;
+        const shouldPlay = isPlaying !== null ? isPlaying : sessionState.isPlaying;
+
+        localState.ignoreNextStateChange = true;
+
+        player.seekTo(targetTime, true);
+
+        if (shouldPlay) {
+            player.playVideo();
+            showSyncNotice(`🔄 Synced to ${formatTime(targetTime)}`);
+        } else {
+            player.pauseVideo();
+            showSyncNotice(`🔄 Synced to ${formatTime(targetTime)}`);
+        }
+    }
+
+    // --- P2P Logic ---
+    function initializePeerJS(asHost, isTwoWay = false) {
+        const username = isTwoWay ? usernameInputTwoway.value.trim() : usernameInputInitial.value.trim();
+        if (!username) { setStatus('Please enter your name.'); return; }
+
+        localState.username = username;
+        localStorage.setItem('syncwave_username', username);
+
+        const btn = isTwoWay ? (asHost ? createTwowayBtn : joinTwowayBtn) : (asHost ? createRoomBtn : joinRoomBtn);
+        setLoading(true, btn);
+
+        if (peer) {
+            try { peer.destroy(); } catch(e) {}
+            peer = null;
+        }
+
+        connections.clear();
+
+        clearTimeout(localState.connectionTimeout);
+        localState.connectionTimeout = setTimeout(() => {
+            setStatus('Connection timed out. Retrying...');
+            setLoading(false, btn);
+
+            if (!asHost && localState.retryCount < 3) {
+                localState.retryCount++;
+                setTimeout(() => {
+                    setStatus(`Retrying... (${localState.retryCount}/3)`);
+                    initializePeerJS(false, isTwoWay);
+                }, 2000);
             } else {
-                player.pauseVideo();
-                showSyncNotice(`🔄 Synced to ${formatTime(targetTime)}`);
+                setStatus('Could not connect. Please check Room ID and try again.');
+                localState.retryCount = 0;
             }
-        }
-        
-        // --- P2P Logic ---
-        function initializePeerJS(asHost, isTwoWay = false) {
-            const username = isTwoWay ? usernameInputTwoway.value.trim() : usernameInputInitial.value.trim();
-            if (!username) { setStatus('Please enter your name.'); return; }
-            
-            localState.username = username;
-            localStorage.setItem('syncwave_username', username);
-            
-            const btn = isTwoWay ? (asHost ? createTwowayBtn : joinTwowayBtn) : (asHost ? createRoomBtn : joinRoomBtn);
-            setLoading(true, btn);
-            
-            if (peer) {
-                try { peer.destroy(); } catch(e) {}
-                peer = null;
+        }, 15000);
+
+        peer = new Peer({
+            config: {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:global.stun.twilio.com:3478' }
+                ]
             }
-            
-            connections.clear();
-            
+        });
+
+        peer.on('open', id => {
             clearTimeout(localState.connectionTimeout);
-            localState.connectionTimeout = setTimeout(() => {
-                setStatus('Connection timed out. Retrying...');
+            myPeerId = id;
+            localState.retryCount = 0;
+
+            if (!sessionState.users.some(u => u.id === myPeerId)) {
+                sessionState.users.push({ id: myPeerId, username: localState.username });
+            }
+
+            if (asHost) {
+                setupHost(isTwoWay);
+            } else {
+                setupGuest(isTwoWay);
+            }
+        });
+
+        peer.on('error', err => {
+            clearTimeout(localState.connectionTimeout);
+
+            if (err.type === 'peer-unavailable') {
+                setStatus('Room not found. Please check Room ID.');
                 setLoading(false, btn);
-                
+
                 if (!asHost && localState.retryCount < 3) {
                     localState.retryCount++;
                     setTimeout(() => {
-                        setStatus(`Retrying... (${localState.retryCount}/3)`);
+                        setStatus(`Reconnecting... (${localState.retryCount}/3)`);
                         initializePeerJS(false, isTwoWay);
-                    }, 2000);
-                } else {
-                    setStatus('Could not connect. Please check Room ID and try again.');
-                    localState.retryCount = 0;
+                    }, 3000);
                 }
-            }, 15000);
-
-            peer = new Peer({
-                config: {
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:global.stun.twilio.com:3478' }
-                    ]
-                }
-            });
-
-            peer.on('open', id => {
-                clearTimeout(localState.connectionTimeout);
-                myPeerId = id;
-                localState.retryCount = 0;
-                
-                if (!sessionState.users.some(u => u.id === myPeerId)) {
-                    sessionState.users.push({ id: myPeerId, username: localState.username });
-                }
-                
-                if (asHost) {
-                    setupHost(isTwoWay);
-                } else {
-                    setupGuest(isTwoWay);
-                }
-            });
-            
-            peer.on('error', err => {
-                clearTimeout(localState.connectionTimeout);
-                
-                if (err.type === 'peer-unavailable') {
-                    setStatus('Room not found. Please check Room ID.');
-                    setLoading(false, btn);
-                    
-                    if (!asHost && localState.retryCount < 3) {
-                        localState.retryCount++;
-                        setTimeout(() => {
-                            setStatus(`Reconnecting... (${localState.retryCount}/3)`);
-                            initializePeerJS(false, isTwoWay);
-                        }, 3000);
-                    }
-                } else {
-                    setStatus(`Error: ${err.type}. Please try again.`);
-                    setLoading(false, btn);
-                }
-            });
-
-            peer.on('disconnected', () => {
-                if (!peer.destroyed) {
-                    peer.reconnect();
-                }
-            });
-        }
-
-        function setupHost(isTwoWay = false) {
-            isHost = true; 
-            hostId = myPeerId;
-            sessionState.isTwoWay = isTwoWay;
-            sessionState.title = isTwoWay ? sessionTitleTwoway.value.trim() || "2-Way Sync" : sessionTitleInput.value.trim() || "My Watch Party";
-            sessionState.isPrivate = isTwoWay ? false : roomTypeToggle.checked;
-            
-            peer.on('connection', conn => {
-                if (sessionState.isTwoWay && connections.size >= 1) {
-                    conn.send({ type: 'room-full' });
-                    setTimeout(() => conn.close(), 500);
-                    return;
-                }
-                handleConnection(conn);
-            });
-            
-            showView(false); 
-            updateUI();
-            setStatus('');
-        }
-
-        function setupGuest(isTwoWay = false) {
-            hostId = isTwoWay ? joinTwowayIdInput.value.trim() : joinRoomIdInput.value.trim();
-            if (!hostId) { 
-                setStatus('Room ID is required.'); 
-                setLoading(false, isTwoWay ? joinTwowayBtn : joinRoomBtn); 
-                return; 
-            }
-            
-            const conn = peer.connect(hostId, { 
-                metadata: { username: localState.username, isTwoWay: isTwoWay },
-                reliable: true
-            });
-            
-            handleConnection(conn);
-        }
-
-        function handleConnection(conn) {
-            connections.set(conn.peer, conn);
-            
-            if (!isHost) {
-                localState.hostConnection = conn;
-            }
-            
-            conn.on('open', () => {
-                if (isHost) {
-                    if (sessionState.isPrivate) {
-                        conn.send({ type: 'auth-request' });
-                    } else {
-                        addAndSyncUser(conn, conn.metadata.username);
-                    }
-                }
-            });
-            
-            conn.on('data', data => onDataReceived(conn, data));
-            conn.on('close', () => onUserDisconnect(conn));
-            conn.on('error', err => {
-                console.error('Connection error:', err);
-                onUserDisconnect(conn);
-            });
-        }
-        
-        function onDataReceived(conn, data) {
-            switch(data.type) {
-                case 'room-full':
-                    alert('This 2-way room is full. Only 2 people can join.');
-                    leaveRoom();
-                    break;
-                    
-                case 'auth-code':
-                    const code = sessionState.accessCodes.find(c => c.code === data.code && !c.usedBy);
-                    if(code) { 
-                        code.usedBy = conn.peer; 
-                        conn.send({ type: 'auth-success' }); 
-                        addAndSyncUser(conn, conn.metadata.username); 
-                    } else { 
-                        conn.send({ type: 'auth-fail' }); 
-                        setTimeout(() => conn.close(), 500); 
-                    }
-                    break;
-                    
-                case 'auth-request':
-                    const userCode = prompt("This room is private. Please enter the access code:");
-                    if(userCode) conn.send({type: 'auth-code', code: userCode.trim().toUpperCase()}); 
-                    else conn.close();
-                    break;
-                    
-                case 'auth-success': 
-                    conn.send({type: 'sync-request'}); 
-                    break;
-                    
-                case 'auth-fail': 
-                    alert('Invalid access code.'); 
-                    leaveRoom(); 
-                    break;
-                    
-                case 'sync-request': 
-                    conn.send({ type: 'sync-state', state: sessionState }); 
-                    break;
-                    
-                case 'sync-state': 
-                    sessionState = data.state; 
-                    showView(false); 
-                    updateUI();
-                    if (sessionState.videoId) {
-                        createPlayer(sessionState.videoId);
-                    }
-                    break;
-                    
-                case 'user-list-update': 
-                    sessionState.users = data.users; 
-                    updateUI(); 
-                    break;
-                    
-                case 'video-change': 
-                    sessionState.videoId = data.videoId;
-                    createPlayer(data.videoId);
-                    updateUI(); 
-                    addSystemMessage(`Video changed`);
-                    break;
-                    
-                case 'player-control':
-                    handlePlayerControl(data);
-                    break;
-                    
-                case 'chat': 
-                    sessionState.chat.push(data.message); 
-                    updateUI(); 
-                    break;
-                    
-                case 'system': 
-                    sessionState.chat.push(data.message); 
-                    updateUI(); 
-                    break;
-                
-                case 'request-current-time':
-                    if ((sessionState.isTwoWay || isHost) && player && playerReady) {
-                        const currentTime = player.getCurrentTime();
-                        const currentState = player.getPlayerState();
-                        const playing = currentState === YT.PlayerState.PLAYING;
-                        
-                        conn.send({
-                            type: 'time-update',
-                            time: currentTime,
-                            isPlaying: playing
-                        });
-                    }
-                    break;
-                
-                case 'request-sync':
-                    if ((sessionState.isTwoWay || isHost) && player && playerReady) {
-                        const currentTime = player.getCurrentTime();
-                        const currentState = player.getPlayerState();
-                        const playing = currentState === YT.PlayerState.PLAYING;
-                        
-                        conn.send({
-                            type: 'sync-response',
-                            time: currentTime,
-                            isPlaying: playing
-                        });
-                    }
-                    break;
-                
-                case 'time-update':
-                    if (!sessionState.isTwoWay && !isHost) {
-                        sessionState.hostTimestamp = data.time;
-                        sessionState.isPlaying = data.isPlaying;
-                        hostTimeDisplay.textContent = formatTime(data.time);
-                    }
-                    break;
-                
-                case 'sync-response':
-                    if (!sessionState.isTwoWay && !isHost) {
-                        sessionState.hostTimestamp = data.time;
-                        sessionState.isPlaying = data.isPlaying;
-                        hostTimeDisplay.textContent = formatTime(data.time);
-                        syncToHost(data.time, data.isPlaying);
-                        showToast('Synced successfully!');
-                    }
-                    break;
-            }
-        }
-        
-        function handlePlayerControl(data) {
-            if (!player || !playerReady) return;
-            
-            // FIXED: Don't apply changes from our own broadcasts
-            if (data.senderId === myPeerId) return;
-            
-            localState.ignoreNextStateChange = true;
-            
-            switch(data.action) {
-                case 'play':
-                    sessionState.isPlaying = true;
-                    prevState = YT.PlayerState.PLAYING;
-                    player.seekTo(data.time, true);
-                    player.playVideo();
-                    break;
-                case 'pause':
-                    sessionState.isPlaying = false;
-                    prevState = YT.PlayerState.PAUSED;
-                    player.seekTo(data.time, true);
-                    player.pauseVideo();
-                    break;
-                case 'seek':
-                    player.seekTo(data.time, true);
-                    break;
-            }
-            
-            sessionState.hostTimestamp = data.time;
-            hostTimeDisplay.textContent = formatTime(data.time);
-        }
-        
-        function addAndSyncUser(conn, username) {
-            const newUser = { id: conn.peer, username };
-            if(!sessionState.users.some(u => u.id === newUser.id)) sessionState.users.push(newUser);
-            
-            if (sessionState.isTwoWay) {
-                addSystemMessage(`${username} joined 💕`);
             } else {
-                addSystemMessage(`${username} has joined.`);
+                setStatus(`Error: ${err.type}. Please try again.`);
+                setLoading(false, btn);
             }
-            
-            conn.send({ type: 'sync-state', state: sessionState });
-            broadcast({ type: 'user-list-update', users: sessionState.users }, conn.peer);
-            updateUI();
-        }
+        });
 
-        function onUserDisconnect(conn) {
-            const user = sessionState.users.find(u => u.id === conn.peer);
-            if(user) { 
-                if (sessionState.isTwoWay) {
-                    addSystemMessage(`${user.username} left 💔`);
-                } else {
-                    addSystemMessage(`${user.username} has left.`);
-                }
-                sessionState.users = sessionState.users.filter(u => u.id !== conn.peer); 
-                broadcast({ type: 'user-list-update', users: sessionState.users }); 
+        peer.on('disconnected', () => {
+            if (!peer.destroyed) {
+                peer.reconnect();
             }
-            connections.delete(conn.peer);
-            updateUI();
-        }
-        
-        function broadcast(data, excludePeerId = null) {
-            for (const [peerId, conn] of connections.entries()) { 
-                if (peerId !== excludePeerId && conn.open) {
-                    try {
-                        conn.send(data);
-                    } catch(e) {}
-                }
-            }
-        }
+        });
+    }
 
-        // --- UI & APP Logic ---
-        function showView(isInitial) {
-            setLoading(false, createRoomBtn); 
-            setLoading(false, joinRoomBtn);
-            setLoading(false, createTwowayBtn); 
-            setLoading(false, joinTwowayBtn);
-            initialView.classList.toggle('hidden', !isInitial);
-            mainView.classList.toggle('hidden', isInitial);
-        }
-        
-        function updateUI() {
-            userCount.textContent = sessionState.users.length;
-            modalUserList.innerHTML = sessionState.users.map(user => `<li class="flex items-center space-x-3 p-2 rounded-md ${user.id === myPeerId ? 'bg-blue-50 dark:bg-blue-900/50' : ''}"><span class="w-2.5 h-2.5 rounded-full ${user.id === myPeerId || connections.has(user.id) ? 'bg-green-500' : 'bg-gray-400'}"></span><span class="font-medium">${user.username} ${user.id === hostId ? '<span class="text-xs font-normal text-yellow-500">(Host)</span>' : ''}</span></li>`).join('');
-            
-            hostControls.classList.toggle('hidden', !(sessionState.isTwoWay || isHost));
-            hostPanel.classList.toggle('hidden', !isHost || !sessionState.isPrivate || sessionState.isTwoWay);
-            manualSyncBtn.classList.toggle('hidden', sessionState.isTwoWay || isHost);
-            twowayBadge.classList.toggle('hidden', !sessionState.isTwoWay);
-            
-            if(isHost && !sessionState.isTwoWay) { 
-                accessCodesList.innerHTML = sessionState.accessCodes.map(c => `<div class="flex justify-between items-center p-1 rounded ${c.usedBy ? 'bg-gray-200 dark:bg-gray-600' : 'bg-gray-100 dark:bg-gray-700'}"><code class="${c.usedBy ? 'line-through text-gray-500' : ''}">${c.code}</code><span class="text-xs text-gray-400">${c.usedBy ? `Used` : 'Unused'}</span></div>`).join(''); 
-            }
-            
-            sessionTitleDisplay.textContent = sessionState.title;
-            roomIdDisplay.textContent = hostId;
-            syncTimeLabel.textContent = "Time:";
+    function setupHost(isTwoWay = false) {
+        isHost = true;
+        hostId = myPeerId;
+        sessionState.isTwoWay = isTwoWay;
+        sessionState.title = isTwoWay ? sessionTitleTwoway.value.trim() || "2-Way Sync" : sessionTitleInput.value.trim() || "My Watch Party";
+        sessionState.isPrivate = isTwoWay ? false : roomTypeToggle.checked;
 
-            chatMessages.innerHTML = '';
-            sessionState.chat.forEach(msg => {
-                const div = document.createElement('div');
-                if (msg.isSystem) { 
-                    div.className = 'system-message text-center my-2'; 
-                    div.innerHTML = `<span class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">${msg.text}</span>`; 
-                } else { 
-                    div.className = 'chat-message mb-3 max-w-lg'; 
-                    div.innerHTML = `<div class="p-3 rounded-lg inline-block ${msg.username === localState.username ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}"><p class="font-bold text-sm ${msg.username === localState.username ? 'text-white' : 'text-blue-400'}">${msg.username}</p><p>${msg.text}</p></div><p class="text-xs text-gray-400 mt-1">${msg.timestamp}</p>`; 
-                }
-                chatMessages.appendChild(div);
-            });
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function loadVideo() {
-            const input = videoUrlInput.value.trim();
-            const videoId = extractYouTubeId(input);
-            
-            if (!videoId) {
-                alert("Please enter a valid YouTube URL or video ID");
+        peer.on('connection', conn => {
+            if (sessionState.isTwoWay && connections.size >= 1) {
+                conn.send({ type: 'room-full' });
+                setTimeout(() => conn.close(), 500);
                 return;
             }
-            
-            sessionState.videoId = videoId;
-            sessionState.hostTimestamp = 0;
-            sessionState.isPlaying = false;
-            createPlayer(videoId);
-            broadcast({ type: 'video-change', videoId: videoId });
-            updateUI();
-            showToast('Video loaded successfully');
-        }
-        
-        function extractYouTubeId(url) {
-            if (url.length === 11 && !url.includes('/') && !url.includes('.')) {
-                return url;
-            }
-            
-            try {
-                const urlObj = new URL(url);
-                
-                if (urlObj.hostname.includes('youtube.com') && urlObj.searchParams.has('v')) {
-                    return urlObj.searchParams.get('v');
-                }
-                
-                if (urlObj.hostname === 'youtu.be') {
-                    return urlObj.pathname.slice(1);
-                }
-            } catch (e) {
-                return url.length === 11 ? url : null;
-            }
-            
-            return null;
+            handleConnection(conn);
+        });
+
+        showView(false);
+        updateUI();
+        setStatus('');
+    }
+
+    function setupGuest(isTwoWay = false) {
+        hostId = isTwoWay ? joinTwowayIdInput.value.trim() : joinRoomIdInput.value.trim();
+        if (!hostId) {
+            setStatus('Room ID is required.');
+            setLoading(false, isTwoWay ? joinTwowayBtn : joinRoomBtn);
+            return;
         }
 
-        function sendChatMessage() {
-            const text = chatInput.value.trim();
-            if (!text) return;
-            const message = { username: localState.username, text, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
-            sessionState.chat.push(message);
-            broadcast({ type: 'chat', message });
-            updateUI();
-            chatInput.value = '';
+        const conn = peer.connect(hostId, {
+            metadata: { username: localState.username, isTwoWay: isTwoWay },
+            reliable: true
+        });
+
+        handleConnection(conn);
+    }
+
+    function handleConnection(conn) {
+        connections.set(conn.peer, conn);
+
+        if (!isHost) {
+            localState.hostConnection = conn;
         }
 
-        function addSystemMessage(text) {
-            const message = { isSystem: true, text };
-            sessionState.chat.push(message);
-            if(sessionState.isTwoWay || isHost) broadcast({type: 'system', message});
-            updateUI();
-        }
-        
-        function generateCodes() {
-            for (let i = 0; i < 5; i++) { 
-                sessionState.accessCodes.push({ code: Math.random().toString(36).substring(2, 8).toUpperCase(), usedBy: null }); 
-            }
-            updateUI();
-        }
-        
-        function exportChat() {
-            if (sessionState.chat.length === 0) { 
-                showToast('Chat is empty'); 
-                return; 
-            }
-            
-            const chatLog = sessionState.chat.map(msg => { 
-                if (msg.isSystem) return `--- ${msg.text} ---`; 
-                return `[${msg.timestamp}] ${msg.username}: ${msg.text}`; 
-            }).join('\n');
-            
-            const header = `Session: ${sessionState.title}\nVideo: ${sessionState.videoId || 'N/A'}\nExported: ${new Date().toLocaleString()}\n\n`;
-            const content = header + chatLog;
-            
-            const textArea = document.createElement('textarea');
-            textArea.value = content;
-            textArea.style.position = 'fixed';
-            textArea.style.top = '0';
-            textArea.style.left = '0';
-            textArea.style.width = '2em';
-            textArea.style.height = '2em';
-            textArea.style.padding = '0';
-            textArea.style.border = 'none';
-            textArea.style.outline = 'none';
-            textArea.style.boxShadow = 'none';
-            textArea.style.background = 'transparent';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showToast('Chat copied to clipboard!');
+        conn.on('open', () => {
+            if (isHost) {
+                if (sessionState.isPrivate) {
+                    conn.send({ type: 'auth-request' });
                 } else {
-                    prompt('Copy this chat:', content);
+                    addAndSyncUser(conn, conn.metadata.username);
                 }
-            } catch (err) {
+            }
+        });
+
+        conn.on('data', data => onDataReceived(conn, data));
+        conn.on('close', () => onUserDisconnect(conn));
+        conn.on('error', err => {
+            console.error('Connection error:', err);
+            onUserDisconnect(conn);
+        });
+    }
+
+    function onDataReceived(conn, data) {
+        switch(data.type) {
+            case 'room-full':
+                alert('This 2-way room is full. Only 2 people can join.');
+                leaveRoom();
+                break;
+
+            case 'auth-code':
+                const code = sessionState.accessCodes.find(c => c.code === data.code && !c.usedBy);
+                if(code) {
+                    code.usedBy = conn.peer;
+                    conn.send({ type: 'auth-success' });
+                    addAndSyncUser(conn, conn.metadata.username);
+                } else {
+                    conn.send({ type: 'auth-fail' });
+                    setTimeout(() => conn.close(), 500);
+                }
+                break;
+
+            case 'auth-request':
+                const userCode = prompt("This room is private. Please enter the access code:");
+                if(userCode) conn.send({type: 'auth-code', code: userCode.trim().toUpperCase()});
+                else conn.close();
+                break;
+
+            case 'auth-success':
+                conn.send({type: 'sync-request'});
+                break;
+
+            case 'auth-fail':
+                alert('Invalid access code.');
+                leaveRoom();
+                break;
+
+            case 'sync-request':
+                conn.send({ type: 'sync-state', state: sessionState });
+                break;
+
+            case 'sync-state':
+                sessionState = data.state;
+                showView(false);
+                updateUI();
+                if (sessionState.videoId) {
+                    createPlayer(sessionState.videoId);
+                }
+                break;
+
+            case 'user-list-update':
+                sessionState.users = data.users;
+                updateUI();
+                break;
+
+            case 'video-change':
+                sessionState.videoId = data.videoId;
+                createPlayer(data.videoId);
+                updateUI();
+                addSystemMessage(`Video changed`);
+                break;
+
+            case 'player-control':
+                handlePlayerControl(data);
+                break;
+
+            case 'chat':
+                sessionState.chat.push(data.message);
+                updateUI();
+                break;
+
+            case 'system':
+                sessionState.chat.push(data.message);
+                updateUI();
+                break;
+
+            case 'request-current-time':
+                if ((sessionState.isTwoWay || isHost) && player && playerReady) {
+                    const currentTime = player.getCurrentTime();
+                    const currentState = player.getPlayerState();
+                    const playing = currentState === YT.PlayerState.PLAYING;
+
+                    conn.send({
+                        type: 'time-update',
+                        time: currentTime,
+                        isPlaying: playing
+                    });
+                }
+                break;
+
+            case 'request-sync':
+                if ((sessionState.isTwoWay || isHost) && player && playerReady) {
+                    const currentTime = player.getCurrentTime();
+                    const currentState = player.getPlayerState();
+                    const playing = currentState === YT.PlayerState.PLAYING;
+
+                    conn.send({
+                        type: 'sync-response',
+                        time: currentTime,
+                        isPlaying: playing
+                    });
+                }
+                break;
+
+            case 'time-update':
+                if (!sessionState.isTwoWay && !isHost) {
+                    sessionState.hostTimestamp = data.time;
+                    sessionState.isPlaying = data.isPlaying;
+                    hostTimeDisplay.textContent = formatTime(data.time);
+                }
+                break;
+
+            case 'sync-response':
+                if (!sessionState.isTwoWay && !isHost) {
+                    sessionState.hostTimestamp = data.time;
+                    sessionState.isPlaying = data.isPlaying;
+                    hostTimeDisplay.textContent = formatTime(data.time);
+                    syncToHost(data.time, data.isPlaying);
+                    showToast('Synced successfully!');
+                }
+                break;
+        }
+    }
+
+    function handlePlayerControl(data) {
+        if (!player || !playerReady) return;
+
+        // FIXED: Don't apply changes from our own broadcasts
+        if (data.senderId === myPeerId) return;
+
+        localState.ignoreNextStateChange = true;
+
+        switch(data.action) {
+            case 'play':
+                sessionState.isPlaying = true;
+                prevState = YT.PlayerState.PLAYING;
+                player.seekTo(data.time, true);
+                player.playVideo();
+                break;
+            case 'pause':
+                sessionState.isPlaying = false;
+                prevState = YT.PlayerState.PAUSED;
+                player.seekTo(data.time, true);
+                player.pauseVideo();
+                break;
+            case 'seek':
+                player.seekTo(data.time, true);
+                break;
+        }
+
+        sessionState.hostTimestamp = data.time;
+        hostTimeDisplay.textContent = formatTime(data.time);
+    }
+
+    function addAndSyncUser(conn, username) {
+        const newUser = { id: conn.peer, username };
+        if(!sessionState.users.some(u => u.id === newUser.id)) sessionState.users.push(newUser);
+
+        if (sessionState.isTwoWay) {
+            addSystemMessage(`${username} joined 💕`);
+        } else {
+            addSystemMessage(`${username} has joined.`);
+        }
+
+        conn.send({ type: 'sync-state', state: sessionState });
+        broadcast({ type: 'user-list-update', users: sessionState.users }, conn.peer);
+        updateUI();
+    }
+
+    function onUserDisconnect(conn) {
+        const user = sessionState.users.find(u => u.id === conn.peer);
+        if(user) {
+            if (sessionState.isTwoWay) {
+                addSystemMessage(`${user.username} left 💔`);
+            } else {
+                addSystemMessage(`${user.username} has left.`);
+            }
+            sessionState.users = sessionState.users.filter(u => u.id !== conn.peer);
+            broadcast({ type: 'user-list-update', users: sessionState.users });
+        }
+        connections.delete(conn.peer);
+        updateUI();
+    }
+
+    function broadcast(data, excludePeerId = null) {
+        for (const [peerId, conn] of connections.entries()) {
+            if (peerId !== excludePeerId && conn.open) {
+                try {
+                    conn.send(data);
+                } catch(e) {}
+            }
+        }
+    }
+
+    // --- UI & APP Logic ---
+    function showView(isInitial) {
+        setLoading(false, createRoomBtn);
+        setLoading(false, joinRoomBtn);
+        setLoading(false, createTwowayBtn);
+        setLoading(false, joinTwowayBtn);
+        initialView.classList.toggle('hidden', !isInitial);
+        mainView.classList.toggle('hidden', isInitial);
+    }
+
+    function updateUI() {
+        userCount.textContent = sessionState.users.length;
+        modalUserList.innerHTML = sessionState.users.map(user => `<li class="flex items-center space-x-3 p-2 rounded-md ${user.id === myPeerId ? 'bg-blue-50 dark:bg-blue-900/50' : ''}"><span class="w-2.5 h-2.5 rounded-full ${user.id === myPeerId || connections.has(user.id) ? 'bg-green-500' : 'bg-gray-400'}"></span><span class="font-medium">${user.username} ${user.id === hostId ? '<span class="text-xs font-normal text-yellow-500">(Host)</span>' : ''}</span></li>`).join('');
+
+        hostControls.classList.toggle('hidden', !(sessionState.isTwoWay || isHost));
+        hostPanel.classList.toggle('hidden', !isHost || !sessionState.isPrivate || sessionState.isTwoWay);
+        manualSyncBtn.classList.toggle('hidden', sessionState.isTwoWay || isHost);
+        twowayBadge.classList.toggle('hidden', !sessionState.isTwoWay);
+
+        if(isHost && !sessionState.isTwoWay) {
+            accessCodesList.innerHTML = sessionState.accessCodes.map(c => `<div class="flex justify-between items-center p-1 rounded ${c.usedBy ? 'bg-gray-200 dark:bg-gray-600' : 'bg-gray-100 dark:bg-gray-700'}"><code class="${c.usedBy ? 'line-through text-gray-500' : ''}">${c.code}</code><span class="text-xs text-gray-400">${c.usedBy ? `Used` : 'Unused'}</span></div>`).join('');
+        }
+
+        sessionTitleDisplay.textContent = sessionState.title;
+        roomIdDisplay.textContent = hostId;
+        syncTimeLabel.textContent = "Time:";
+
+        chatMessages.innerHTML = '';
+        sessionState.chat.forEach(msg => {
+            const div = document.createElement('div');
+            if (msg.isSystem) {
+                div.className = 'system-message text-center my-2';
+                div.innerHTML = `<span class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">${msg.text}</span>`;
+            } else {
+                div.className = 'chat-message mb-3 max-w-lg';
+                div.innerHTML = `<div class="p-3 rounded-lg inline-block ${msg.username === localState.username ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}"><p class="font-bold text-sm ${msg.username === localState.username ? 'text-white' : 'text-blue-400'}">${msg.username}</p><p>${msg.text}</p></div><p class="text-xs text-gray-400 mt-1">${msg.timestamp}</p>`;
+            }
+            chatMessages.appendChild(div);
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function loadVideo() {
+        const input = videoUrlInput.value.trim();
+        const videoId = extractYouTubeId(input);
+
+        if (!videoId) {
+            alert("Please enter a valid YouTube URL or video ID");
+            return;
+        }
+
+        sessionState.videoId = videoId;
+        sessionState.hostTimestamp = 0;
+        sessionState.isPlaying = false;
+        createPlayer(videoId);
+        broadcast({ type: 'video-change', videoId: videoId });
+        updateUI();
+        showToast('Video loaded successfully');
+    }
+
+    function extractYouTubeId(url) {
+        if (url.length === 11 && !url.includes('/') && !url.includes('.')) {
+            return url;
+        }
+
+        try {
+            const urlObj = new URL(url);
+
+            if (urlObj.hostname.includes('youtube.com') && urlObj.searchParams.has('v')) {
+                return urlObj.searchParams.get('v');
+            }
+
+            if (urlObj.hostname === 'youtu.be') {
+                return urlObj.pathname.slice(1);
+            }
+        } catch (e) {
+            return url.length === 11 ? url : null;
+        }
+
+        return null;
+    }
+
+    function sendChatMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        const message = { username: localState.username, text, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+        sessionState.chat.push(message);
+        broadcast({ type: 'chat', message });
+        updateUI();
+        chatInput.value = '';
+    }
+
+    function addSystemMessage(text) {
+        const message = { isSystem: true, text };
+        sessionState.chat.push(message);
+        if(sessionState.isTwoWay || isHost) broadcast({type: 'system', message});
+        updateUI();
+    }
+
+    function generateCodes() {
+        for (let i = 0; i < 5; i++) {
+            sessionState.accessCodes.push({ code: Math.random().toString(36).substring(2, 8).toUpperCase(), usedBy: null });
+        }
+        updateUI();
+    }
+
+    function exportChat() {
+        if (sessionState.chat.length === 0) {
+            showToast('Chat is empty');
+            return;
+        }
+
+        const chatLog = sessionState.chat.map(msg => {
+            if (msg.isSystem) return `--- ${msg.text} ---`;
+            return `[${msg.timestamp}] ${msg.username}: ${msg.text}`;
+        }).join('\n');
+
+        const header = `Session: ${sessionState.title}\nVideo: ${sessionState.videoId || 'N/A'}\nExported: ${new Date().toLocaleString()}\n\n`;
+        const content = header + chatLog;
+
+        const textArea = document.createElement('textarea');
+        textArea.value = content;
+        textArea.style.position = 'fixed';
+        textArea.style.top = '0';
+        textArea.style.left = '0';
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = '0';
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showToast('Chat copied to clipboard!');
+            } else {
                 prompt('Copy this chat:', content);
             }
-            
-            document.body.removeChild(textArea);
+        } catch (err) {
+            prompt('Copy this chat:', content);
         }
-        
-        function leaveRoom() { 
-            if (peer) peer.destroy();
-            if (syncCheckInterval) clearInterval(syncCheckInterval);
-            if (guestTimeUpdateInterval) clearInterval(guestTimeUpdateInterval);
-            window.location.reload(); 
+
+        document.body.removeChild(textArea);
+    }
+
+    function leaveRoom() {
+        if (peer) peer.destroy();
+        if (syncCheckInterval) clearInterval(syncCheckInterval);
+        if (guestTimeUpdateInterval) clearInterval(guestTimeUpdateInterval);
+        window.location.reload();
+    }
+
+    function setStatus(text) { statusText.textContent = text; }
+    function setLoading(isLoading, button) {
+        button.disabled = isLoading;
+        const originalText = button.textContent;
+        button.innerHTML = isLoading ? loadingSpinner + `<span class="ml-2">Connecting...</span>` : originalText;
+    }
+    function showToast(message) {
+        toast.textContent = message;
+        toast.classList.remove('opacity-0', 'translate-y-3');
+        setTimeout(() => toast.classList.add('opacity-0', 'translate-y-3'), 3000);
+    }
+    function showSyncNotice(message) {
+        guestSyncNotice.textContent = message;
+        guestSyncNotice.classList.remove('opacity-0', '-translate-y-4');
+        setTimeout(() => { guestSyncNotice.classList.add('opacity-0', '-translate-y-4'); }, 2500);
+    }
+
+    function formatTime(totalSeconds) {
+        if (typeof totalSeconds !== 'number' || isNaN(totalSeconds)) return '--:--';
+        totalSeconds = Math.floor(totalSeconds);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        const paddedSeconds = seconds.toString().padStart(2, '0');
+        if (hours > 0) {
+            const paddedMinutes = minutes.toString().padStart(2, '0');
+            return `${hours}:${paddedMinutes}:${paddedSeconds}`;
         }
-        
-        function setStatus(text) { statusText.textContent = text; }
-        function setLoading(isLoading, button) { 
-            button.disabled = isLoading; 
-            const originalText = button.textContent;
-            button.innerHTML = isLoading ? loadingSpinner + `<span class="ml-2">Connecting...</span>` : originalText; 
-        }
-        function showToast(message) { 
-            toast.textContent = message; 
-            toast.classList.remove('opacity-0', 'translate-y-3'); 
-            setTimeout(() => toast.classList.add('opacity-0', 'translate-y-3'), 3000); 
-        }
-        function showSyncNotice(message) { 
-            guestSyncNotice.textContent = message; 
-            guestSyncNotice.classList.remove('opacity-0', '-translate-y-4'); 
-            setTimeout(() => { guestSyncNotice.classList.add('opacity-0', '-translate-y-4'); }, 2500); 
-        }
-        
-        function formatTime(totalSeconds) {
-            if (typeof totalSeconds !== 'number' || isNaN(totalSeconds)) return '--:--';
-            totalSeconds = Math.floor(totalSeconds);
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-            const paddedSeconds = seconds.toString().padStart(2, '0');
-            if (hours > 0) { 
-                const paddedMinutes = minutes.toString().padStart(2, '0'); 
-                return `${hours}:${paddedMinutes}:${paddedSeconds}`; 
-            }
-            return `${minutes}:${paddedSeconds}`;
-        }
-        
-        // --- Event Listeners ---
-        createRoomBtn.addEventListener('click', () => initializePeerJS(true, false));
-        joinRoomBtn.addEventListener('click', () => initializePeerJS(false, false));
-        createTwowayBtn.addEventListener('click', () => initializePeerJS(true, true));
-        joinTwowayBtn.addEventListener('click', () => initializePeerJS(false, true));
-        leaveRoomBtn.addEventListener('click', leaveRoom);
-        loadVideoBtn.addEventListener('click', loadVideo);
-        sendChatBtn.addEventListener('click', sendChatMessage);
-        chatInput.addEventListener('keypress', e => e.key === 'Enter' && sendChatMessage());
-        generateCodesBtn.addEventListener('click', generateCodes);
-        manualSyncBtn.addEventListener('click', requestManualSync);
-        
-        copyRoomIdBtn.addEventListener('click', () => {
-            const textArea = document.createElement('textarea');
-            textArea.value = hostId;
-            textArea.style.position = 'fixed';
-            textArea.style.top = '0';
-            textArea.style.left = '0';
-            textArea.style.width = '2em';
-            textArea.style.height = '2em';
-            textArea.style.padding = '0';
-            textArea.style.border = 'none';
-            textArea.style.outline = 'none';
-            textArea.style.boxShadow = 'none';
-            textArea.style.background = 'transparent';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showToast('Room ID copied!');
-                } else {
-                    alert('Room ID: ' + hostId);
-                }
-            } catch (err) {
+        return `${minutes}:${paddedSeconds}`;
+    }
+
+    // --- Event Listeners ---
+    createRoomBtn.addEventListener('click', () => initializePeerJS(true, false));
+    joinRoomBtn.addEventListener('click', () => initializePeerJS(false, false));
+    createTwowayBtn.addEventListener('click', () => initializePeerJS(true, true));
+    joinTwowayBtn.addEventListener('click', () => initializePeerJS(false, true));
+    leaveRoomBtn.addEventListener('click', leaveRoom);
+    loadVideoBtn.addEventListener('click', loadVideo);
+    sendChatBtn.addEventListener('click', sendChatMessage);
+    chatInput.addEventListener('keypress', e => e.key === 'Enter' && sendChatMessage());
+    generateCodesBtn.addEventListener('click', generateCodes);
+    manualSyncBtn.addEventListener('click', requestManualSync);
+
+    copyRoomIdBtn.addEventListener('click', () => {
+        const textArea = document.createElement('textarea');
+        textArea.value = hostId;
+        textArea.style.position = 'fixed';
+        textArea.style.top = '0';
+        textArea.style.left = '0';
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = '0';
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showToast('Room ID copied!');
+            } else {
                 alert('Room ID: ' + hostId);
             }
-            
-            document.body.removeChild(textArea);
-        });
+        } catch (err) {
+            alert('Room ID: ' + hostId);
+        }
         
-        viewersBtn.addEventListener('click', () => viewersModal.classList.remove('hidden'));
-        closeModalBtn.addEventListener('click', () => viewersModal.classList.add('hidden'));
-        exportChatBtn.addEventListener('click', exportChat);
-        
-        window.addEventListener('beforeunload', () => {
-            if (peer) peer.destroy();
-        });
-        
-        usernameInputInitial.value = localStorage.getItem('syncwave_username') || '';
-        usernameInputTwoway.value = localStorage.getItem('syncwave_username') || '';
-    </script>
+        document.body.removeChild(textArea);
+    });
+
+    viewersBtn.addEventListener('click', () => viewersModal.classList.remove('hidden'));
+    closeModalBtn.addEventListener('click', () => viewersModal.classList.add('hidden'));
+    exportChatBtn.addEventListener('click', exportChat);
+
+    window.addEventListener('beforeunload', () => {
+        if (peer) peer.destroy();
+    });
+
+    usernameInputInitial.value = localStorage.getItem('syncwave_username') || '';
+    usernameInputTwoway.value = localStorage.getItem('syncwave_username') || '';
+</script>
 </body>
 </html>
